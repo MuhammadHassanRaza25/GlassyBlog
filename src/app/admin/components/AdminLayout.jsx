@@ -77,7 +77,7 @@ export default function AdminLayout({ children }) {
                   : "max-h-0 opacity-0 scale-y-95"
               }`}
             >
-              <div className="details-scrollbar text-start px-1.5 py-3 border-b border-emerald-500/50 bg-black overflow-auto">
+              <div className="details-scrollbar text-start px-4 py-3 border-b border-emerald-500/50 bg-black overflow-auto">
                 <p className="text-white font-semibold text-sm">
                   {user?.username}
                 </p>
