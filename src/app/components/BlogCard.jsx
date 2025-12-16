@@ -133,7 +133,7 @@ export default function BlogCard({ data, basePath = "blog", onDelete }) {
                         month: "short",
                         day: "numeric",
                       })
-                    : "Oct 10, 2025"}
+                    : "N/A"}
                 </p>
               </div>
             </div>

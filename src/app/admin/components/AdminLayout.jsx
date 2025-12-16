@@ -199,7 +199,7 @@ export default function AdminLayout({ children }) {
       </button>
 
       {/* Page Content */}
-      <div className="w-screen h-scressn px-5 bg-gray-100 overflow-y-scroll">{children}</div>
+      <div className="w-screen h-screen px-5 bg-gray-100 overflow-y-scroll">{children}</div>
     </div>
   );
 }

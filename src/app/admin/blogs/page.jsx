@@ -4,7 +4,7 @@ import { Table } from "antd";
 import AdminLayout from "../components/AdminLayout";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AllBlogs() {
   const searchParams = useSearchParams();
@@ -17,6 +17,8 @@ export default function AllBlogs() {
     error: false,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(page);
+  const router = useRouter();
 
   const columns = [
     {
@@ -60,7 +62,7 @@ export default function AllBlogs() {
               month: "short",
               day: "numeric",
             })
-          : "Oct 10, 2025";
+          : "N/A";
       },
     },
     {
@@ -78,21 +80,22 @@ export default function AllBlogs() {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       try {
         let res = await fetch(
-          `${baseUrl}/api/admin/blogs?page=${page}&limit=${limit}`,
+          `${baseUrl}/api/admin/blogs?page=${currentPage}&limit=${limit}`,
           { cache: "no-store" }
         );
         let blogData = await res.json();
         setBlogsData(blogData);
-        console.log("Blogs Data Is Here ===>", blogData);
+        // console.log("Blogs Data Is Here ===>", blogData);
       } catch (err) {
         console.log("Error in fetching blog data ===>", err);
         setBlogsData({ data: [], totalPages: 0, page: 1, error: true });
+      } finally{
+        setIsLoading(false);
       }
     };
 
     fetchBlogs();
-    setIsLoading(false);
-  }, [blogsData.page]);
+  }, [currentPage, limit]);
 
   return (
     <>
@@ -115,7 +118,7 @@ export default function AllBlogs() {
             <>
               {blogsData.error ? (
                 <p className="text-red-400 text-center lg:text-base text-sm mt-5 mb-14">
-                  Failed to fetch user blogs. Please try again later.
+                  Failed to fetch blogs data. Please try again later.
                 </p>
               ) : blogsData.data.length > 0 ? (
                 <Table
@@ -123,7 +126,7 @@ export default function AllBlogs() {
                   expandable={{
                     expandedRowRender: (record) => (
                       <>
-                        <h1 className="font-semibold text-lg mb-2">
+                        <h1 className="font-semibold text-lg text-center mb-2 bg-emerald-100 p-1">
                           Blog Post Details
                         </h1>
                         <h1>
@@ -145,7 +148,7 @@ export default function AllBlogs() {
                                   day: "numeric",
                                 }
                               )
-                            : "Oct 10, 2025"}
+                            : "N/A"}
                         </p>
                       </>
                     ),
@@ -156,11 +159,13 @@ export default function AllBlogs() {
                     ...blog,
                   }))}
                   pagination={{
-                    current: blogsData.page,
+                    current: currentPage,
                     pageSize: limit,
                     total: blogsData.total,
-                    onChange: (newPage) =>
-                      setBlogsData((prev) => ({ ...prev, page: newPage })),
+                    onChange: (page, pageSize) => {
+                      setCurrentPage(page);
+                      router.push(`/admin/blogs?page=${page}&limit=${pageSize}`);
+                    },
                   }}
                 />
               ) : (
