@@ -57,7 +57,7 @@ export default function AdminLayout({ children }) {
               ${isSidebarOpen ? "w-14 h-14" : "w-10 h-10"}`}
             >
               <Image
-                src={user?.avatar?.ur || "/images/avatar.png"}
+                src={user?.avatar?.url || "/images/avatar.png"}
                 width={30}
                 height={30}
                 alt="User Avatar"
@@ -199,7 +199,7 @@ export default function AdminLayout({ children }) {
       </button>
 
       {/* Page Content */}
-      <div className="w-screen h-screen px-5 bg-gray-100">{children}</div>
+      <div className="w-screen h-scressn px-5 bg-gray-100 overflow-y-scroll">{children}</div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ export default function AllUsers() {
   return (
     <>
       <AdminLayout>
-        <div className="mt-3 px-5 py-7 bg-emerald-300 rounded-xl shadow-xl">
+        <div className="mt-3 px-5 py-7 bg-emerald-300 rounded-xl shadow-lg">
           <h1 className="text-black text-2xl font-bold">
             Welcome To Users Page 👋
           </h1>

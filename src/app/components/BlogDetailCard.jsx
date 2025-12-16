@@ -114,12 +114,11 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
         {/* Author Info */}
         <div className="flex items-center gap-3 mb-6">
           <Image
-            src={"https://randomuser.me/api/portraits/men/75.jpg"}
+            src={author?.avatar?.url || "/images/avatar.png"}
             width={40}
             height={40}
             alt="Blog Author"
             className="w-10 h-10 rounded-full border-2 border-emerald-500 object-cover"
-            unoptimized
           />
           <div>
             <p className="text-sm font-medium">

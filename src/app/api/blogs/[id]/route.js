@@ -19,7 +19,7 @@ export async function GET(request, { params }) {
   }
 
   try {
-    let singleBlog = await BlogModel.findById(id).populate("author", "username").lean();
+    let singleBlog = await BlogModel.findById(id).populate("author", "username avatar").lean();
     if (!singleBlog) {
       return Response.json(
         {

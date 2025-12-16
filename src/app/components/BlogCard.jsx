@@ -11,7 +11,7 @@ export default function BlogCard({ data, basePath = "blog", onDelete }) {
   const showButtons = pathname.startsWith("/my-blogs");
 
   let { _id: id, image, title, description, author, createdAt } = data;
-
+  
   const handleDelete = () => {
     toast((t) => (
       <div className="text-white">
@@ -116,12 +116,11 @@ export default function BlogCard({ data, basePath = "blog", onDelete }) {
           <div className="flex items-end justify-between mt-auto">
             <div className="flex items-center gap-3">
               <Image
-                src={"https://randomuser.me/api/portraits/men/75.jpg"}
+                src={author?.avatar?.url || "/images/avatar.png"}
                 width={40}
                 height={40}
                 alt="Blog Author"
                 className="w-10 h-10 rounded-full border-2 border-emerald-400 object-cover shrink-0"
-                unoptimized
               />
               <div className="overflow-hidden">
                 <p className="text-white font-medium text-sm truncate">
