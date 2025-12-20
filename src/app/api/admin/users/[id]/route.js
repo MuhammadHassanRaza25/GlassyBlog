@@ -4,6 +4,7 @@ import { ConnectDB } from "@/app/lib/dbConnect";
 import { verifyUser } from "@/app/lib/verifyUser";
 import { v2 as cloudinary } from "cloudinary";
 import UserModel from "@/app/lib/models/UserModel";
+import BlogModel from "@/app/lib/models/BlogModel";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,7 +14,7 @@ cloudinary.config({
 
 export async function DELETE(request, { params }) {
   await ConnectDB();
-  const { id } = params;
+  const { id } = await params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return NextResponse.json({ msg: "Invalid User ID" }, { status: 400 });
@@ -32,6 +33,7 @@ export async function DELETE(request, { params }) {
   }
 
   try {
+    await BlogModel.deleteMany({ author: id });
     const deleteUser = await UserModel.findByIdAndDelete(id);
 
     if (!deleteUser) {
