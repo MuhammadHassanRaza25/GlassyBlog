@@ -209,11 +209,11 @@ export default function AllBlogs() {
                         </h1>
                         <h1>
                           <span className="font-semibold">Title:</span>{" "}
-                          {record.title}
+                          {record.title || "N/A"}
                         </h1>
                         <p>
                           <span className="font-semibold">Description:</span>{" "}
-                          {record.description}
+                          {record.description || "N/A"}
                         </p>
                         <p>
                           <span className="font-semibold">Published Date:</span>{" "}

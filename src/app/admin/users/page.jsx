@@ -187,15 +187,18 @@ export default function AllUsers() {
             columns={columns}
             expandable={{
               expandedRowRender: (record) => (
-<>
+                <>
                   <h1 className="font-semibold text-lg text-center mb-2 bg-emerald-100 p-1">
-                    Users Details
+                    User Details
                   </h1>
                   <p>
-                    <strong>Username:</strong> {record.username}
+                    <strong>Username:</strong> {record.username || "N/A"}
                   </p>
                   <p>
-                    <strong>Email:</strong> {record.email}
+                    <strong>Email:</strong> {record.email || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Role:</strong> {record.role || "N/A"}
                   </p>
                 </>
               ),
