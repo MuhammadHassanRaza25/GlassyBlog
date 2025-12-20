@@ -25,7 +25,7 @@ export async function GET(request, { params }) {
 
   try {
     const singleBlog = await BlogModel.findById(id)
-      .populate("author", "username")
+      .populate("author", "username avatar")
       .lean();
 
     if (!singleBlog) {

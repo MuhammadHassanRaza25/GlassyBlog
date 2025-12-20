@@ -24,7 +24,7 @@ export async function GET(request) {
 
     const total = await BlogModel.countDocuments({ author: user._id });
     const blogs = await BlogModel.find({ author: user._id })
-      .populate("author", "username")
+      .populate("author", "username avatar")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)

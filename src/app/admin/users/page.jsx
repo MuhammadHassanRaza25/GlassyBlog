@@ -62,6 +62,16 @@ export default function AllUsers() {
       ellipsis: true,
     },
     {
+      title: "Registered Date",
+      key: "createdAt",
+      render: (_, record) =>
+        new Date(record.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
+    },
+    {
       title: "Delete User",
       key: "action",
       render: (_, record) =>
@@ -188,17 +198,30 @@ export default function AllUsers() {
             expandable={{
               expandedRowRender: (record) => (
                 <>
-                  <h1 className="font-semibold text-lg text-center mb-2 bg-emerald-100 p-1">
+                  <h3 className="p-1 text-sm font-semibold bg-emerald-100 text-gray-700 mb-2">
                     User Details
-                  </h1>
+                  </h3>
                   <p>
-                    <strong>Username:</strong> {record.username || "N/A"}
+                    <span className="font-semibold">Username:</span>{" "}
+                    {record?.username || "N/A"}
                   </p>
                   <p>
-                    <strong>Email:</strong> {record.email || "N/A"}
+                    <span className="font-semibold">Email:</span>{" "}
+                    {record?.email || "N/A"}
                   </p>
                   <p>
-                    <strong>Role:</strong> {record.role || "N/A"}
+                    <span className="font-semibold">Role:</span>{" "}
+                    {record?.role || "N/A"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Registered Date:</span>{" "}
+                    {record?.createdAt
+                      ? new Date(record.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "N/A"}
                   </p>
                 </>
               ),

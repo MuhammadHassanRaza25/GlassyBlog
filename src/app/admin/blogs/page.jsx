@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 export default function AllBlogs() {
   const searchParams = useSearchParams();
@@ -203,20 +204,45 @@ export default function AllBlogs() {
                   columns={columns}
                   expandable={{
                     expandedRowRender: (record) => (
-                      <>
-                        <h1 className="font-semibold text-lg text-center mb-2 bg-emerald-100 p-1">
+                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <h3 className="p-1 text-sm font-semibold bg-emerald-100 text-gray-700 mb-2">
+                          Author Details
+                        </h3>
+                        <div className="flex items-center gap-3 mt-3 mb-2">
+                          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500">
+                            <Image
+                              src={
+                                record?.author?.avatar?.url ||
+                                "/images/avatar.png"
+                              }
+                              width={40}
+                              height={40}
+                              alt="Author Avatar"
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                          <div>
+                            <p className="font-semibold">
+                              {record?.author?.username || "N/A"}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {record?.author?.email || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                        <h3 className="p-1 text-sm font-semibold bg-emerald-100 text-gray-700 mt-5 mb-2">
                           Blog Post Details
-                        </h1>
-                        <h1>
-                          <span className="font-semibold">Title:</span>{" "}
-                          {record.title || "N/A"}
-                        </h1>
+                        </h3>
                         <p>
-                          <span className="font-semibold">Description:</span>{" "}
-                          {record.description || "N/A"}
+                          <span className="font-semibold">Title:</span>{" "}
+                          {record?.title || "N/A"}
                         </p>
                         <p>
-                          <span className="font-semibold">Published Date:</span>{" "}
+                          <span className="font-semibold">Description:</span>{" "}
+                          {record?.description || "N/A"}
+                        </p>
+                        <p>
+                          <span className="font-semibold">Published:</span>{" "}
                           {record?.createdAt
                             ? new Date(record.createdAt).toLocaleDateString(
                                 "en-US",
@@ -228,7 +254,18 @@ export default function AllBlogs() {
                               )
                             : "N/A"}
                         </p>
-                      </>
+
+                        <p>
+                          <span className="font-semibold">Link:</span>{" "}
+                          <Link
+                            href={`/blog/${record._id}`}
+                            className="text-emerald-600 hover:underline"
+                            target="_blank"
+                          >
+                            View Blog Post
+                          </Link>
+                        </p>
+                      </div>
                     ),
                     rowExpandable: () => true,
                   }}
