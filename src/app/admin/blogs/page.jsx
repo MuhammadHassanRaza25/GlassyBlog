@@ -5,6 +5,7 @@ import AdminLayout from "../components/AdminLayout";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function AllBlogs() {
   const searchParams = useSearchParams();
@@ -12,10 +13,12 @@ export default function AllBlogs() {
   const limit = parseInt(searchParams?.get("limit")) || 5;
   const [blogsData, setBlogsData] = useState({
     data: [],
+    total: 0,
     totalPages: 0,
     page: 1,
     error: false,
   });
+
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(page);
   const router = useRouter();
@@ -69,18 +72,85 @@ export default function AllBlogs() {
       title: "Delete Blog",
       key: "action",
       render: (_, record) => (
-        <a onClick={() => console.log("Delete blog", record.key)}>Delete</a>
+        <button
+          onClick={() => handleDelete(record._id)}
+          className="text-red-600 cursor-pointer bg-red-50 hover:bg-red-100 px-2 py-1.5 rounded-md"
+        >
+          Delete
+        </button>
       ),
     },
   ];
 
+  const handleDelete = (id) => {
+    toast((t) => (
+      <div className="text-white">
+        <p className="font-semibold">Are you sure you want to delete?</p>
+
+        <div className="flex justify-center gap-2 mt-3">
+          {/* YES Button */}
+          <button
+            className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white cursor-pointer"
+            onClick={async () => {
+              toast.dismiss(t.id);
+
+              try {
+                await toast.promise(
+                  fetch(`/api/admin/blogs/${id}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                  }).then((res) => {
+                    if (!res.ok) throw new Error("Failed to delete");
+                    return res.json();
+                  }),
+                  {
+                    loading: "Deleting...",
+                    success: "Blog deleted successfully!",
+                    error: "Failed to delete blog.",
+                  }
+                );
+
+                // Remove deleted blog from blogsData
+                setBlogsData((prev) => {
+                  const newData = prev.data.filter((blog) => blog._id !== id);
+                  const newTotal = prev.total - 1;
+                  const newTotalPages = Math.ceil(newTotal / limit);
+
+                  return {
+                    ...prev,
+                    data: newData,
+                    total: newTotal,
+                    totalPages: newTotalPages,
+                  };
+                });
+              } catch (err) {
+                console.log("Failed to delete blog!");
+                console.error(err);
+              }
+            }}
+          >
+            Yes
+          </button>
+
+          {/* NO Button */}
+          <button
+            className="bg-gray-500 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+        </div>
+      </div>
+    ));
+  };
+
   useEffect(() => {
     setIsLoading(true);
     const fetchBlogs = async () => {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       try {
         let res = await fetch(
-          `${baseUrl}/api/admin/blogs?page=${currentPage}&limit=${limit}`,
+          `/api/admin/blogs?page=${currentPage}&limit=${limit}`,
           { cache: "no-store" }
         );
         let blogData = await res.json();
@@ -89,13 +159,21 @@ export default function AllBlogs() {
       } catch (err) {
         console.log("Error in fetching blog data ===>", err);
         setBlogsData({ data: [], totalPages: 0, page: 1, error: true });
-      } finally{
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchBlogs();
   }, [currentPage, limit]);
+
+  useEffect(() => {
+    if (blogsData.data.length === 0 && currentPage > 1) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      router.push(`/admin/blogs?page=${newPage}&limit=${limit}`);
+    }
+  }, [blogsData.data.length, currentPage, limit]);
 
   return (
     <>
@@ -152,7 +230,7 @@ export default function AllBlogs() {
                         </p>
                       </>
                     ),
-                    rowExpandable: (record) => record.name !== "Not Expandable",
+                    rowExpandable: () => true,
                   }}
                   dataSource={blogsData.data.map((blog) => ({
                     key: blog._id,
@@ -164,7 +242,9 @@ export default function AllBlogs() {
                     total: blogsData.total,
                     onChange: (page, pageSize) => {
                       setCurrentPage(page);
-                      router.push(`/admin/blogs?page=${page}&limit=${pageSize}`);
+                      router.push(
+                        `/admin/blogs?page=${page}&limit=${pageSize}`
+                      );
                     },
                   }}
                 />

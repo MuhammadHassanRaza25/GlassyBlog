@@ -13,7 +13,7 @@ cloudinary.config({
 
 export async function DELETE(request, { params }) {
   await ConnectDB();
-  const { id } = params;
+  const { id } = await params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return NextResponse.json({ msg: "Invalid Blog ID" }, { status: 400 });
