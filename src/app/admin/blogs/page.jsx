@@ -190,7 +190,7 @@ export default function AllBlogs() {
         {/* content */}
         <div className="mt-10 h-[70vh]">
           {isLoading ? (
-            <div className="h-40 mb-10 flex justify-center items-center">
+            <div className="h-96 mb-10 flex justify-center items-center">
               <div className="loader"></div>
             </div>
           ) : (
