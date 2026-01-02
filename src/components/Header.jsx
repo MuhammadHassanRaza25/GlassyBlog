@@ -49,9 +49,14 @@ export default function Header() {
 
   const dropdownRef = useRef(null);
   const avatarRef = useRef(null);
+  const mobileAvatarRef = useRef(null);
+  const mobileDropdownRef = useRef(null);
+
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
 
   useEffect(() => {
-    const handler = (e) => {
+    const handleClickOutside = (e) => {
+      // Desktop
       if (
         dropdownRef.current &&
         avatarRef.current &&
@@ -60,9 +65,20 @@ export default function Header() {
       ) {
         setIsDropdownOpen(false);
       }
+
+      // Mobile
+      if (
+        mobileDropdownRef.current &&
+        mobileAvatarRef.current &&
+        !mobileDropdownRef.current.contains(e.target) &&
+        !mobileAvatarRef.current.contains(e.target)
+      ) {
+        setIsMobileDropdownOpen(false);
+      }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   return (
@@ -165,7 +181,7 @@ export default function Header() {
                   {/* Avatar Button */}
                   <button
                     ref={avatarRef}
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
                     className="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500 focus:outline-none cursor-pointer"
                   >
                     <Image
@@ -334,8 +350,8 @@ export default function Header() {
                 <>
                   {/* Avatar Button */}
                   <button
-                    ref={avatarRef}
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    ref={mobileAvatarRef}
+                    onClick={() => setIsMobileDropdownOpen((prev) => !prev)}
                     className="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500 focus:outline-none cursor-pointer"
                   >
                     <Image
@@ -349,16 +365,14 @@ export default function Header() {
 
                   {/* Dropdown */}
                   <div
-                    ref={dropdownRef}
-                    className={`absolute left-0 mt-5 w-52 border border-emerald-500/50 rounded-lg shadow-lg z-50 overflow-hidden transform transition-all duration-200 ease-in-out
+                    ref={mobileDropdownRef}
+                    className={`fixed top-20 right-10 w-52 border border-emerald-500/50 rounded-lg shadow-lg z-50 overflow-hidden transform transition-all duration-200 ease-in-out
                       ${
-                        isDropdownOpen
+                        isMobileDropdownOpen
                           ? "max-h-96 opacity-100 scale-y-100"
                           : "max-h-0 opacity-0 scale-y-95"
                       }`}
                   >
-                    {/* {isDropdownOpen && (
-                      <div className="absolute left-0 mt-5 w-52 border border-emerald-500/50 rounded-lg shadow-lg z-50 overflow-hidden"> */}
                     {/* Name & Email */}
                     <div className="details-scrollbar px-4 py-3 border-b border-emerald-500/50 bg-black overflow-auto">
                       <p className="text-white font-semibold text-sm">
@@ -381,7 +395,6 @@ export default function Header() {
                       <span className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-emerald-400 to-transparent transition-all duration-300 group-hover:w-3/4" />
                     </button>
                   </div>
-                  {/* )} */}
                 </>
               ) : (
                 <Link

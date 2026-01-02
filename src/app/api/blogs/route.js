@@ -17,8 +17,20 @@ export async function GET(request) {
       100
     );
 
-    const total = await BlogModel.countDocuments();
-    const blogs = await BlogModel.find()
+    const search = (searchParams.get("search") || "").trim();
+
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const query = search
+      ? {
+          $or: [
+            { title: { $regex: escapeRegex(search), $options: "i" } },
+            { description: { $regex: escapeRegex(search), $options: "i" } },
+          ],
+        }
+      : {};
+
+    const total = await BlogModel.countDocuments(query);
+    const blogs = await BlogModel.find(query)
       .populate("author", "username avatar")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
