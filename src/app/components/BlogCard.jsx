@@ -6,12 +6,17 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function BlogCard({ data, basePath = "blog", onDelete }) {
+export default function BlogCard({
+  data,
+  basePath = "blog",
+  onDelete,
+  searchTerm = "",
+}) {
   const pathname = usePathname();
   const showButtons = pathname.startsWith("/my-blogs");
 
   let { _id: id, image, title, description, author, createdAt } = data;
-  
+
   const handleDelete = () => {
     toast((t) => (
       <div className="text-white">
@@ -61,6 +66,29 @@ export default function BlogCard({ data, basePath = "blog", onDelete }) {
     ));
   };
 
+  const highlightText = (text, search) => {
+    if (!search) return text;
+    const words = search
+      .trim()
+      .split(/\s+/)
+      .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+
+    if (!words.length) return text;
+
+    const regex = new RegExp(`(${words.join("|")})`, "gi");
+    const parts = text.split(regex);
+
+    return parts.map((part, i) =>
+      regex.test(part) ? (
+        <span key={i} className="bg-emerald-400 text-black font-semibold">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
     <Link href={`/${basePath}/${id}`}>
       <div
@@ -104,13 +132,16 @@ export default function BlogCard({ data, basePath = "blog", onDelete }) {
         {/* Content */}
         <div className="p-5 flex flex-col flex-grow justify-between">
           <h2 className="text-white text-xl font-semibold mb-2 hover:text-emerald-400 transition-colors duration-300 line-clamp-2">
-            {(title || "Untitled Blog").slice(0, 70)}
+            {highlightText((title || "Untitled Blog").slice(0, 70), searchTerm)}
           </h2>
 
           <p className="text-gray-300 text-sm mb-6 line-clamp-2">
-            {(
-              description || "No description provided for this blog post."
-            ).slice(0, 110)}
+            {highlightText(
+              (
+                description || "No description provided for this blog post."
+              ).slice(0, 110),
+              searchTerm
+            )}
           </p>
 
           <div className="flex items-end justify-between mt-auto">

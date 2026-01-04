@@ -20,12 +20,14 @@ export async function GET(request) {
     const search = (searchParams.get("search") || "").trim();
 
     const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const query = search
+    const words = search ? search.split(/\s+/).map(escapeRegex) : [];
+
+    const query = words.length
       ? {
-          $or: [
-            { title: { $regex: escapeRegex(search), $options: "i" } },
-            { description: { $regex: escapeRegex(search), $options: "i" } },
-          ],
+          $or: words.flatMap((word) => [
+            { title: { $regex: word, $options: "i" } },
+            { description: { $regex: word, $options: "i" } },
+          ]),
         }
       : {};
 

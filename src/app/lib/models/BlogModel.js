@@ -2,15 +2,16 @@ const { default: mongoose } = require("mongoose");
 
 const BlogSchema = new mongoose.Schema(
   {
-    title: { type: String, unique: true },
-    description: String,
+    title: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true },
     image: {
-      url: { type: String },   
-      public_id: { type: String },  
+      url: { type: String },
+      public_id: { type: String },
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
+      required: true,
     },
   },
   {
@@ -18,6 +19,6 @@ const BlogSchema = new mongoose.Schema(
   }
 );
 
-const BlogModel = mongoose.models.Blogs || mongoose.model("Blogs", BlogSchema); // hamne pehle models main check kia ke Blogs ka model hai to sahi hai, nhi hai to create kardo.
+const BlogModel = mongoose.models.Blogs || mongoose.model("Blogs", BlogSchema);
 
 export default BlogModel;

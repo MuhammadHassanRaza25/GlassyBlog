@@ -8,7 +8,6 @@ import BlogCard from "./components/BlogCard";
 import { MotionUp } from "@/components/ui/motion-up";
 import BlogsPagination from "./components/BlogPagination";
 import SearchBlogs from "@/components/SearchBlogs";
-import toast from "react-hot-toast";
 
 export default function HomeClient() {
   const searchParams = useSearchParams();
@@ -45,7 +44,6 @@ export default function HomeClient() {
       setBlogs(data);
     } catch (err) {
       console.log("Error fetching blogs:", err);
-      // toast.error("Error in fetching blogs. Please try again");
       setBlogs({ data: [], total: 0, page: 1, error: true });
     } finally {
       setLoading(false);
@@ -120,28 +118,45 @@ export default function HomeClient() {
           <p className="text-red-400 text-center lg:text-base text-sm mt-5 mb-14">
             Failed to fetch user blogs. Please try again later.
           </p>
-        ) : blogs.data.length > 0 ? (
-          blogs.data.map((blog, index) => (
+        ) : blogs?.data.length > 0 ? (
+          blogs?.data.map((blog, index) => (
             <MotionUp key={blog._id} delay={index * 0.1}>
-              <BlogCard data={blog} />
+              <BlogCard data={blog} searchTerm={debouncedSearch} />
             </MotionUp>
           ))
         ) : (
-          <p className="text-emerald-400 text-center mt-10 mb-14">
-            No blogs available.
-          </p>
+          <div className="text-center mt-10 mb-14 text-emerald-400">
+            {debouncedSearch ? (
+              <>
+                <p>
+                  No results found for <strong>"{debouncedSearch}"</strong>.
+                </p>
+                <p className="text-gray-300 text-sm mt-1">
+                  Try using different keywords or check your spelling.
+                </p>
+              </>
+            ) : (
+              <p className="text-emerald-400 text-center mt-10 mb-14">
+                No blogs available.
+              </p>
+            )}
+          </div>
         )}
       </div>
 
       {/* Pagination */}
-        <div className={`${blogs.data.length > 0 ? "block" : "hidden"} flex justify-center mt-6 max-w-5xl mx-auto`}>
-          <BlogsPagination
-            page={page}
-            limit={limit}
-            total={blogs.total}
-            onPageChange={goToPage}
-          />
-        </div>
+      <div
+        className={`${
+          blogs?.data.length > 0 ? "block" : "hidden"
+        } flex justify-center mt-6 max-w-5xl mx-auto`}
+      >
+        <BlogsPagination
+          page={page}
+          limit={limit}
+          total={blogs.total}
+          onPageChange={goToPage}
+        />
+      </div>
 
       <Footer />
     </>
