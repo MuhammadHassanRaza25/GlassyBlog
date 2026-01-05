@@ -143,6 +143,17 @@ a:focus{
 }
 @keyframes l3 {to{transform: rotate(1turn)}}
 
+/* Ant Design Spin - Loader customization */
+.ant-spin-dot-item {
+  background-color: #10b981 !important;
+}
+
+.ant-table-wrapper .ant-spin-nested-loading > div > .ant-spin {
+  max-height: none;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(2px);
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

@@ -17,7 +17,7 @@ export default function AllBlogs() {
   const [searchValue, setSearchValue] = useState(searchFromURL);
   const [debouncedSearch, setDebouncedSearch] = useState(searchFromURL);
   const [blogsData, setBlogsData] = useState({
-    data: [],
+    data: null,
     total: 0,
     totalPages: 0,
     page: 1,
@@ -199,7 +199,12 @@ export default function AllBlogs() {
       } catch (err) {
         if (err.name === "AbortError") return;
         console.log("Error in fetching blog data ===>", err);
-        setBlogsData({ data: [], totalPages: 0, page: 1, error: true });
+        setBlogsData((prev) => ({
+          ...prev,
+          totalPages: 0,
+          page: 1,
+          error: true,
+        }));
       } finally {
         setIsLoading(false);
       }
@@ -238,7 +243,7 @@ export default function AllBlogs() {
   };
 
   useEffect(() => {
-    if (!isLoading && blogsData.data.length === 0 && currentPage > 1) {
+    if (!isLoading && blogsData?.data?.length === 0 && currentPage > 1) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
 
@@ -249,7 +254,7 @@ export default function AllBlogs() {
 
       router.push(`/admin/blogs?${params.toString()}`);
     }
-  }, [blogsData.data.length, currentPage, limit, debouncedSearch, isLoading]);
+  }, [blogsData?.data?.length, currentPage, limit, debouncedSearch, isLoading]);
 
   return (
     <>
@@ -271,18 +276,19 @@ export default function AllBlogs() {
 
         {/* content */}
         <div className="mt-5 h-[70vh]">
-          {isLoading ? (
+          {blogsData?.data === null ? (
             <div className="h-96 mb-10 flex justify-center items-center">
               <div className="loader"></div>
             </div>
           ) : (
             <>
-              {blogsData.error ? (
+              {blogsData?.error ? (
                 <p className="text-red-400 text-center lg:text-base text-sm mt-5 mb-14">
                   Failed to fetch blogs data. Please try again later.
                 </p>
-              ) : blogsData.data.length > 0 ? (
+              ) : blogsData?.data?.length > 0 ? (
                 <Table
+                  loading={isLoading}
                   columns={columns}
                   expandable={{
                     expandedRowRender: (record) => (
@@ -344,7 +350,7 @@ export default function AllBlogs() {
                         <p>
                           <span className="font-semibold">Link:</span>{" "}
                           <Link
-                            href={`/blog/${record._id}`}
+                            href={`/blog/${record?._id}`}
                             className="text-emerald-600 hover:underline"
                             target="_blank"
                           >
@@ -355,14 +361,14 @@ export default function AllBlogs() {
                     ),
                     rowExpandable: () => true,
                   }}
-                  dataSource={blogsData.data.map((blog) => ({
+                  dataSource={blogsData?.data?.map((blog) => ({
                     key: blog._id,
                     ...blog,
                   }))}
                   pagination={{
                     current: currentPage,
                     pageSize: limit,
-                    total: blogsData.total,
+                    total: blogsData?.total,
                     onChange: handleTableChange,
                   }}
                 />
