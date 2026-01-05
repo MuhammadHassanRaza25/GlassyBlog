@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import BlogCard from "./components/BlogCard";
 import { MotionUp } from "@/components/ui/motion-up";
 import BlogsPagination from "./components/BlogPagination";
-import SearchBlogs from "@/components/SearchBlogs";
+import SearchBlogs from "@/app/components/SearchBlogs";
 
 export default function HomeClient() {
   const searchParams = useSearchParams();

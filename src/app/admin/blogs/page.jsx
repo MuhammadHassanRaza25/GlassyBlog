@@ -3,15 +3,19 @@
 import { Table } from "antd";
 import AdminLayout from "../components/AdminLayout";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import AdminSearch from "../components/AdminSearch";
 
 export default function AllBlogs() {
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page")) || 1;
   const limit = parseInt(searchParams?.get("limit")) || 5;
+  const searchFromURL = searchParams?.get("search") || "";
+  const [searchValue, setSearchValue] = useState(searchFromURL);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchFromURL);
   const [blogsData, setBlogsData] = useState({
     data: [],
     total: 0,
@@ -19,10 +23,36 @@ export default function AllBlogs() {
     page: 1,
     error: false,
   });
-
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(page);
   const router = useRouter();
+  const controllerRef = useRef(null);
+
+  const getHighlightedText = (text, search) => {
+    if (!text) return "N/A";
+    if (!search || !search.trim()) return text;
+
+    const words = search
+      .trim()
+      .split(/\s+/)
+      .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+
+    const regex = new RegExp(`(${words.join("|")})`, "gi");
+    const parts = text.split(regex);
+
+    return parts.map((part, i) =>
+      regex.test(part) ? (
+        <span
+          key={i}
+          className="bg-emerald-300 text-black font-semibold px-1 rounded mx-0.5"
+        >
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
 
   const columns = [
     {
@@ -48,12 +78,14 @@ export default function AllBlogs() {
       dataIndex: "title",
       key: "title",
       ellipsis: true,
+      render: (text) => getHighlightedText(text, debouncedSearch),
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
       ellipsis: true,
+      render: (text) => getHighlightedText(text, debouncedSearch),
     },
     {
       title: "Published Date",
@@ -147,17 +179,25 @@ export default function AllBlogs() {
 
   useEffect(() => {
     setIsLoading(true);
+
+    if (controllerRef.current) controllerRef.current.abort();
+    controllerRef.current = new AbortController();
+
     const fetchBlogs = async () => {
-      // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       try {
         let res = await fetch(
-          `/api/admin/blogs?page=${currentPage}&limit=${limit}`,
-          { cache: "no-store" }
+          `/api/admin/blogs?page=${currentPage}&limit=${limit}&search=${debouncedSearch}`,
+          {
+            credentials: "include",
+            cache: "no-store",
+            signal: controllerRef.current.signal,
+          }
         );
         let blogData = await res.json();
         setBlogsData(blogData);
         // console.log("Blogs Data Is Here ===>", blogData);
       } catch (err) {
+        if (err.name === "AbortError") return;
         console.log("Error in fetching blog data ===>", err);
         setBlogsData({ data: [], totalPages: 0, page: 1, error: true });
       } finally {
@@ -166,15 +206,50 @@ export default function AllBlogs() {
     };
 
     fetchBlogs();
-  }, [currentPage, limit]);
+  }, [currentPage, limit, debouncedSearch]);
+
+  // Debouncing
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const trimmedSearch = searchValue.trim();
+      setDebouncedSearch(trimmedSearch);
+
+      // URL update with search + page reset
+      const params = new URLSearchParams();
+      params.set("page", "1");
+      params.set("limit", limit);
+      if (trimmedSearch) params.set("search", trimmedSearch);
+      else params.delete("search");
+
+      router.replace(`/admin/blogs?${params.toString()}`, { scroll: false });
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchValue]);
+
+  const handleTableChange = (page, pageSize) => {
+    setCurrentPage(page);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    params.set("limit", pageSize.toString());
+    if (debouncedSearch) params.set("search", debouncedSearch);
+
+    router.push(`/admin/blogs?${params.toString()}`);
+  };
 
   useEffect(() => {
-    if (blogsData.data.length === 0 && currentPage > 1) {
+    if (!isLoading && blogsData.data.length === 0 && currentPage > 1) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
-      router.push(`/admin/blogs?page=${newPage}&limit=${limit}`);
+
+      const params = new URLSearchParams(searchParams);
+      params.set("page", newPage.toString());
+      params.set("limit", limit.toString());
+      if (debouncedSearch) params.set("search", debouncedSearch);
+
+      router.push(`/admin/blogs?${params.toString()}`);
     }
-  }, [blogsData.data.length, currentPage, limit]);
+  }, [blogsData.data.length, currentPage, limit, debouncedSearch, isLoading]);
 
   return (
     <>
@@ -187,8 +262,15 @@ export default function AllBlogs() {
             Efficiently manage users’ blogs across the GlassyBlog platform.
           </p>
         </div>
+
+        {/* Search Input */}
+        <AdminSearch
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+        />
+
         {/* content */}
-        <div className="mt-10 h-[70vh]">
+        <div className="mt-5 h-[70vh]">
           {isLoading ? (
             <div className="h-96 mb-10 flex justify-center items-center">
               <div className="loader"></div>
@@ -235,11 +317,15 @@ export default function AllBlogs() {
                         </h3>
                         <p>
                           <span className="font-semibold">Title:</span>{" "}
-                          {record?.title || "N/A"}
+                          {getHighlightedText(record?.title, debouncedSearch) ||
+                            "N/A"}
                         </p>
                         <p>
                           <span className="font-semibold">Description:</span>{" "}
-                          {record?.description || "N/A"}
+                          {getHighlightedText(
+                            record?.description,
+                            debouncedSearch
+                          ) || "N/A"}
                         </p>
                         <p>
                           <span className="font-semibold">Published:</span>{" "}
@@ -277,18 +363,27 @@ export default function AllBlogs() {
                     current: currentPage,
                     pageSize: limit,
                     total: blogsData.total,
-                    onChange: (page, pageSize) => {
-                      setCurrentPage(page);
-                      router.push(
-                        `/admin/blogs?page=${page}&limit=${pageSize}`
-                      );
-                    },
+                    onChange: handleTableChange,
                   }}
                 />
               ) : (
-                <p className="text-emerald-400 text-center mt-10 mb-14">
-                  Blogs data not available.
-                </p>
+                <div className="text-center mt-10 mb-14 text-emerald-500">
+                  {debouncedSearch ? (
+                    <>
+                      <p>
+                        No results found for{" "}
+                        <strong>"{debouncedSearch}"</strong>.
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        Try using different keywords or check your spelling.
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-emerald-500 text-center mt-10 mb-14">
+                      Blogs data not available.
+                    </p>
+                  )}
+                </div>
               )}
             </>
           )}

@@ -23,8 +23,21 @@ export async function GET(request) {
       100
     );
 
-    const total = await BlogModel.countDocuments();
-    const blogs = await BlogModel.find()
+    const search = (searchParams.get("search") || "").trim();
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const words = search ? search.split(/\s+/).map(escapeRegex) : [];
+
+    const query = words.length
+      ? {
+          $or: words.flatMap((word) => [
+            { title: { $regex: word, $options: "i" } },
+            { description: { $regex: word, $options: "i" } },
+          ]),
+        }
+      : {};
+
+    const total = await BlogModel.countDocuments(query);
+    const blogs = await BlogModel.find(query)
       .populate("author", "username email avatar")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)

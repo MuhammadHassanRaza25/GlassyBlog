@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { MotionUp } from "@/components/ui/motion-up";
 import { useRouter, useSearchParams } from "next/navigation";
-import SearchBlogs from "@/components/SearchBlogs";
+import SearchBlogs from "@/app/components/SearchBlogs";
 
 export default function MyBlogs() {
   const searchParams = useSearchParams();

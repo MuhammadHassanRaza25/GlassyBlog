@@ -1,11 +1,10 @@
 "use client";
-import { MotionUp } from "./ui/motion-up";
+import { MotionUp } from "../../components/ui/motion-up";
 import { FaSearch } from "react-icons/fa";
 
 export default function SearchBlogs({ searchValue, onSearchChange }) {
   return (
     <>
-      {/* Search Input */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
         <MotionUp delay={0.1}>
           <div className="group relative w-fit mx-auto">
