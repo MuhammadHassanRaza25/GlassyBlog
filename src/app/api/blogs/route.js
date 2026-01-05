@@ -18,7 +18,6 @@ export async function GET(request) {
     );
 
     const search = (searchParams.get("search") || "").trim();
-
     const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const words = search ? search.split(/\s+/).map(escapeRegex) : [];
 

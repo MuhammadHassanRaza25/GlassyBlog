@@ -38,11 +38,16 @@ export default function HomeClient() {
         `${baseUrl}/api/blogs?page=${pageNumber}&limit=${limit}&search=${encodeURIComponent(
           query
         )}`,
-        { signal: controllerRef.current.signal }
+        {
+          credentials: "include",
+          cache: "no-store",
+          signal: controllerRef.current.signal,
+        }
       );
       const data = await res.json();
       setBlogs(data);
     } catch (err) {
+      if (err.name === "AbortError") return;
       console.log("Error fetching blogs:", err);
       setBlogs({ data: [], total: 0, page: 1, error: true });
     } finally {
@@ -69,7 +74,7 @@ export default function HomeClient() {
     return () => clearTimeout(handler);
   }, [searchValue]);
 
-  // Fetch blogs with debaounced search
+  // Fetch blogs with debounced search
   useEffect(() => {
     fetchBlogs(page, debouncedSearch);
   }, [page, debouncedSearch]);
