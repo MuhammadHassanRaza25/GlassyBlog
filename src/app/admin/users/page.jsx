@@ -3,17 +3,20 @@
 import { Table } from "antd";
 import AdminLayout from "../components/AdminLayout";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import AdminSearch from "../components/AdminSearch";
 
 export default function AllUsers() {
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page")) || 1;
-  const limit = parseInt(searchParams?.get("limit")) || 10;
-
+  const limit = parseInt(searchParams?.get("limit")) || 5;
+  const searchFromURL = searchParams?.get("search") || "";
+  const [searchValue, setSearchValue] = useState(searchFromURL);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchFromURL);
   const [usersData, setUsersData] = useState({
-    data: [],
+    data: null,
     total: 0,
     totalPages: 0,
     page: 1,
@@ -22,8 +25,33 @@ export default function AllUsers() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(page);
   const router = useRouter();
+  const controllerRef = useRef(null);
 
-  console.log(usersData);
+  const getHighlightedText = (text, search) => {
+    if (!text) return "N/A";
+    if (!search || !search.trim()) return text;
+
+    const words = search
+      .trim()
+      .split(/\s+/)
+      .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+
+    const regex = new RegExp(`(${words.join("|")})`, "gi");
+    const parts = text.split(regex);
+
+    return parts.map((part, i) =>
+      regex.test(part) ? (
+        <span
+          key={i}
+          className="bg-emerald-300 text-black font-semibold px-1 rounded mx-0.5"
+        >
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
 
   const columns = [
     {
@@ -48,18 +76,31 @@ export default function AllUsers() {
       dataIndex: "username",
       key: "username",
       ellipsis: true,
+      render: (text) => getHighlightedText(text, debouncedSearch),
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
       ellipsis: true,
+      render: (text) => getHighlightedText(text, debouncedSearch),
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
       ellipsis: true,
+      render: (role) => (
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${
+            role === "admin"
+              ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+              : "bg-blue-100 text-blue-700 border border-blue-200"
+          }`}
+        >
+          {role}
+        </span>
+      ),
     },
     {
       title: "Registered Date",
@@ -144,33 +185,69 @@ export default function AllUsers() {
 
   useEffect(() => {
     setIsLoading(true);
+
+    if (controllerRef.current) controllerRef.current.abort();
+    controllerRef.current = new AbortController();
+
     const fetchUsers = async () => {
       try {
         const res = await fetch(
-          `/api/admin/users?page=${currentPage}&limit=${limit}`,
+          `/api/admin/users?page=${currentPage}&limit=${limit}&search=${debouncedSearch}`,
           {
+            credentials: "include",
             cache: "no-store",
+            signal: controllerRef.current.signal,
           }
         );
         const data = await res.json();
         setUsersData(data);
       } catch (err) {
-        console.error("Error fetching users:", err);
-        setUsersData({ data: [], totalPages: 0, page: 1, error: true });
+        // console.error("Error fetching users:", err);
+        if (err.name === "AbortError") return;
+        setUsersData((prev) => ({
+          ...prev,
+          totalPages: 0,
+          page: 1,
+          error: true,
+        }));
       } finally {
         setIsLoading(false);
       }
     };
     fetchUsers();
-  }, [currentPage, limit]);
+  }, [currentPage, limit, debouncedSearch]);
+
+  // Debouncing
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const trimmedSearch = searchValue.trim();
+      setDebouncedSearch(trimmedSearch);
+
+      // URL update with search + page reset
+      const params = new URLSearchParams();
+      params.set("page", "1");
+      params.set("limit", limit);
+      if (trimmedSearch) params.set("search", trimmedSearch);
+      else params.delete("search");
+
+      router.replace(`/admin/users?${params.toString()}`, { scroll: false });
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchValue]);
 
   useEffect(() => {
-    if (usersData.data.length === 0 && currentPage > 1) {
+    if (!isLoading && usersData?.data?.length === 0 && currentPage > 1) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
-      router.push(`/admin/users?page=${newPage}&limit=${limit}`);
+
+      const params = new URLSearchParams(window.location.search);
+      params.set("page", newPage.toString());
+      params.set("limit", limit.toString());
+      if (debouncedSearch) params.set("search", debouncedSearch);
+      router.push(`/admin/users?${params.toString()}`);
     }
-  }, [usersData.data.length, currentPage, limit]);
+  }, [usersData?.data?.length, currentPage, limit]);
 
   return (
     <AdminLayout>
@@ -183,17 +260,25 @@ export default function AllUsers() {
         </p>
       </div>
 
+      {/* Search Input */}
+      <AdminSearch
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        placeholder={"Search users by username or email"}
+      />
+
       <div className="mt-10 h-[70vh]">
-        {isLoading ? (
+        {usersData?.data === null ? (
           <div className="h-96 mb-10 flex justify-center items-center">
             <div className="loader"></div>
           </div>
-        ) : usersData.error ? (
+        ) : usersData?.error ? (
           <p className="text-red-400 text-center mt-5 mb-14">
             Failed to fetch users data. Please try again later.
           </p>
-        ) : usersData.data.length > 0 ? (
+        ) : usersData?.data?.length > 0 ? (
           <Table
+            loading={isLoading}
             columns={columns}
             expandable={{
               expandedRowRender: (record) => (
@@ -203,11 +288,13 @@ export default function AllUsers() {
                   </h3>
                   <p>
                     <span className="font-semibold">Username:</span>{" "}
-                    {record?.username || "N/A"}
+                    {getHighlightedText(record?.username, debouncedSearch) ||
+                      "N/A"}
                   </p>
                   <p>
                     <span className="font-semibold">Email:</span>{" "}
-                    {record?.email || "N/A"}
+                    {getHighlightedText(record?.email, debouncedSearch) ||
+                      "N/A"}
                   </p>
                   <p>
                     <span className="font-semibold">Role:</span>{" "}
@@ -227,24 +314,41 @@ export default function AllUsers() {
               ),
               rowExpandable: () => true,
             }}
-            dataSource={usersData.data.map((user) => ({
-              key: user._id,
+            dataSource={usersData?.data?.map((user) => ({
+              key: user?._id,
               ...user,
             }))}
             pagination={{
               current: currentPage,
               pageSize: limit,
-              total: usersData.total,
+              total: usersData?.total,
               onChange: (page, pageSize) => {
                 setCurrentPage(page);
-                router.push(`/admin/users?page=${page}&limit=${pageSize}`);
+                const params = new URLSearchParams(searchParams);
+                params.set("page", page.toString());
+                params.set("limit", pageSize.toString());
+                if (debouncedSearch) params.set("search", debouncedSearch);
+                router.push(`/admin/users?${params.toString()}`);
               },
             }}
           />
         ) : (
-          <p className="text-emerald-400 text-center mt-10 mb-14">
-            Users data not available.
-          </p>
+          <div className="text-center mt-10 mb-14 text-emerald-500">
+            {debouncedSearch ? (
+              <>
+                <p>
+                  No results found for <strong>"{debouncedSearch}"</strong>.
+                </p>
+                <p className="text-gray-500 text-sm mt-1">
+                  Try using different keywords or check your spelling.
+                </p>
+              </>
+            ) : (
+              <p className="text-emerald-500 text-center mt-10 mb-14">
+                Users data not available.
+              </p>
+            )}
+          </div>
         )}
       </div>
     </AdminLayout>

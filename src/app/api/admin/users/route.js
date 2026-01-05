@@ -22,8 +22,21 @@ export async function GET(request) {
       100
     );
 
-    const total = await UserModel.countDocuments();
-    const users = await UserModel.find()
+    const search = (searchParams.get("search") || "").trim();
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const words = search ? search.split(/\s+/).map(escapeRegex) : [];
+
+    const query = words.length
+      ? {
+          $or: words.flatMap((word) => [
+            { username: { $regex: word, $options: "i" } },
+            { email: { $regex: word, $options: "i" } },
+          ]),
+        }
+      : {};
+
+    const total = await UserModel.countDocuments(query);
+    const users = await UserModel.find(query)
       .select("-password")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)

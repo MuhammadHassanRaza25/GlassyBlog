@@ -80,7 +80,7 @@ export default function BlogCard({
 
     return parts.map((part, i) =>
       regex.test(part) ? (
-        <span key={i} className="bg-emerald-400 text-black font-semibold">
+        <span key={i} className="bg-emerald-400 text-black font-semibold rounded px-1.5 mx-0.5">
           {part}
         </span>
       ) : (

@@ -198,7 +198,7 @@ export default function AllBlogs() {
         // console.log("Blogs Data Is Here ===>", blogData);
       } catch (err) {
         if (err.name === "AbortError") return;
-        console.log("Error in fetching blog data ===>", err);
+        // console.log("Error in fetching blog data ===>", err);
         setBlogsData((prev) => ({
           ...prev,
           totalPages: 0,
@@ -251,7 +251,6 @@ export default function AllBlogs() {
       params.set("page", newPage.toString());
       params.set("limit", limit.toString());
       if (debouncedSearch) params.set("search", debouncedSearch);
-
       router.push(`/admin/blogs?${params.toString()}`);
     }
   }, [blogsData?.data?.length, currentPage, limit, debouncedSearch, isLoading]);
@@ -272,6 +271,7 @@ export default function AllBlogs() {
         <AdminSearch
           searchValue={searchValue}
           onSearchChange={setSearchValue}
+          placeholder={"Search blogs by title or description"}
         />
 
         {/* content */}
@@ -362,7 +362,7 @@ export default function AllBlogs() {
                     rowExpandable: () => true,
                   }}
                   dataSource={blogsData?.data?.map((blog) => ({
-                    key: blog._id,
+                    key: blog?._id,
                     ...blog,
                   }))}
                   pagination={{

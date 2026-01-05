@@ -12,7 +12,7 @@ import SearchBlogs from "@/app/components/SearchBlogs";
 export default function HomeClient() {
   const searchParams = useSearchParams();
   const [blogs, setBlogs] = useState({
-    data: [],
+    data: null,
     total: 0,
     page: 1,
     error: false,
@@ -115,17 +115,17 @@ export default function HomeClient() {
       <SearchBlogs searchValue={searchValue} onSearchChange={setSearchValue} />
 
       <div className="mt-14 mb-10 flex flex-wrap gap-5 justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {loading ? (
+        {loading || blogs.data === null ? (
           <div className="h-40 mb-10 flex justify-center items-center">
             <div className="loader"></div>
           </div>
-        ) : blogs.error ? (
+        ) : blogs?.error ? (
           <p className="text-red-400 text-center lg:text-base text-sm mt-5 mb-14">
             Failed to fetch user blogs. Please try again later.
           </p>
-        ) : blogs?.data.length > 0 ? (
-          blogs?.data.map((blog, index) => (
-            <MotionUp key={blog._id} delay={index * 0.1}>
+        ) : blogs?.data?.length > 0 ? (
+          blogs?.data?.map((blog, index) => (
+            <MotionUp key={blog?._id} delay={index * 0.1}>
               <BlogCard data={blog} searchTerm={debouncedSearch} />
             </MotionUp>
           ))
@@ -152,13 +152,13 @@ export default function HomeClient() {
       {/* Pagination */}
       <div
         className={`${
-          blogs?.data.length > 0 ? "block" : "hidden"
+          !loading && blogs?.data?.length > 0 ? "block" : "hidden"
         } flex justify-center mt-6 max-w-5xl mx-auto`}
       >
         <BlogsPagination
           page={page}
           limit={limit}
-          total={blogs.total}
+          total={blogs?.total}
           onPageChange={goToPage}
         />
       </div>

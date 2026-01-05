@@ -11,7 +11,7 @@ import SearchBlogs from "@/app/components/SearchBlogs";
 export default function MyBlogs() {
   const searchParams = useSearchParams();
   const [resData, setResData] = useState({
-    data: [],
+    data: null,
     totalPages: 0,
     page: 1,
     error: false,
@@ -119,18 +119,18 @@ export default function MyBlogs() {
       <SearchBlogs searchValue={searchValue} onSearchChange={setSearchValue} />
 
       <div className="mt-14 mb-10 flex flex-wrap gap-5 justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {isLoading ? (
+        {isLoading || resData?.data === null ? (
           <div className="h-40 mb-10 flex justify-center items-center">
             <div className="loader"></div>
           </div>
         ) : (
           <>
-            {resData.error ? (
+            {resData?.error ? (
               <p className="text-red-400 text-center lg:text-base text-sm mt-5 mb-14">
                 Failed to fetch user blogs. Please try again later.
               </p>
-            ) : resData.data.length > 0 ? (
-              resData.data.map((blog, index) => (
+            ) : resData?.data?.length > 0 ? (
+              resData?.data?.map((blog, index) => (
                 <MotionUp key={blog._id} delay={index * 0.1}>
                   <BlogCard
                     data={blog}
@@ -165,13 +165,13 @@ export default function MyBlogs() {
       {/* Pagination */}
       <div
         className={`${
-          resData.data.length > 0 ? "block" : "hidden"
+          !isLoading && resData?.data?.length > 0 ? "block" : "hidden"
         } flex justify-center mt-6 max-w-5xl mx-auto`}
       >
         <BlogsPagination
-          page={resData.page}
+          page={resData?.page}
           limit={limit}
-          total={resData.total}
+          total={resData?.total}
           basePath="my-blogs"
         />
       </div>
