@@ -28,7 +28,6 @@ export default function CreateBlog() {
 
     const formData = new FormData(formRef.current);
     const title = formData.get("title");
-    // const description = formData.get("description");
     const imageFile = formData.get("image");
     let imageUrl = null;
     let imagePublicId = null;
@@ -45,8 +44,8 @@ export default function CreateBlog() {
       return;
     }
 
-    if (description.length < 10) {
-      toast.error("description must be at least 10 characters");
+    if (!description || description.replace(/<[^>]*>/g, "").length < 10) {
+      toast.error("Description must be at least 10 characters");
       setIsLoading(false);
       return;
     }
@@ -162,18 +161,9 @@ export default function CreateBlog() {
               className="w-full text-sm bg-white/10 border border-white/30 text-white placeholder-white/70 py-2 px-4 rounded-full focus:outline-none focus:border-emerald-500 transition"
               type="text"
               name="title"
-              placeholder="Enter Blog Title"
+              placeholder="Enter blog title"
               required
             />
-            {/* <div className="w-full rounded-xl bg-white/10 border border-white/30 overflow-hidden">
-              <textarea
-                className="w-full resize-none box-border text-sm text-white placeholder-white/70 py-2 px-4 focus:outline-none focus:border-emerald-500 transition textarea-scrollbar overflow-y-auto rounded-xl"
-                name="description"
-                placeholder="Enter Description"
-                required
-                rows={3}
-              ></textarea>
-            </div> */}
             <BlogEditor value={description} onChange={setDescription} />
             <input
               type="file"

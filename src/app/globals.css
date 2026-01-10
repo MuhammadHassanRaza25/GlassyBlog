@@ -43,11 +43,19 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-html{
+html {
   scroll-behavior: smooth;
 }
 body {
   background: #0a0a0a;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+  height: 0;
 }
 
 .ant-pagination-item {
@@ -59,9 +67,9 @@ body {
   background: transparent !important;
 }
 
-a:focus{
+a:focus {
   outline: none;
-  color: #34D399;
+  color: #34d399;
 }
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
@@ -83,15 +91,15 @@ a:focus{
 }
 /* Scrollbar for textarea */
 .textarea-scrollbar::-webkit-scrollbar {
-  width: 5px; 
+  width: 5px;
 }
 .textarea-scrollbar::-webkit-scrollbar-track {
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 8px; 
+  border-radius: 8px;
 }
 .textarea-scrollbar::-webkit-scrollbar-thumb {
-  border-radius: 8px; 
-  border: 2px solid transparent; 
+  border-radius: 8px;
+  border: 2px solid transparent;
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
 }
@@ -114,17 +122,19 @@ a:focus{
   padding: 8px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: #34D399;
-  --_m: 
-    conic-gradient(#0000 10%,#000),
-    linear-gradient(#000 0 0) content-box;
+  background: #34d399;
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
   -webkit-mask: var(--_m);
-          mask: var(--_m);
+  mask: var(--_m);
   -webkit-mask-composite: source-out;
-          mask-composite: subtract;
+  mask-composite: subtract;
   animation: l3 1s infinite linear;
 }
-@keyframes l3 {to{transform: rotate(1turn)}}
+@keyframes l3 {
+  to {
+    transform: rotate(1turn);
+  }
+}
 
 .formLoader {
   width: 30px;
@@ -132,16 +142,18 @@ a:focus{
   aspect-ratio: 1;
   border-radius: 50%;
   background: #ffffff;
-  --_m: 
-    conic-gradient(#0000 10%,#000),
-    linear-gradient(#000 0 0) content-box;
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
   -webkit-mask: var(--_m);
-          mask: var(--_m);
+  mask: var(--_m);
   -webkit-mask-composite: source-out;
-          mask-composite: subtract;
+  mask-composite: subtract;
   animation: l3 1s infinite linear;
 }
-@keyframes l3 {to{transform: rotate(1turn)}}
+@keyframes l3 {
+  to {
+    transform: rotate(1turn);
+  }
+}
 
 /* Ant Design Spin - Loader customization */
 .ant-spin-dot-item {

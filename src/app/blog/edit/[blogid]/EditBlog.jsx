@@ -1,5 +1,6 @@
 "use client";
 
+import BlogEditor from "@/app/components/BlogEditor";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Image from "next/image";
@@ -13,6 +14,7 @@ export default function EditBlog({ blogid }) {
   const [loading, setIsLoading] = useState(false);
   const [blogData, setBlogData] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [description, setDescription] = useState("");
 
   const getBlogData = async () => {
     try {
@@ -38,6 +40,12 @@ export default function EditBlog({ blogid }) {
     getBlogData();
   }, [blogid]);
 
+  useEffect(() => {
+    if (blogData?.description) {
+      setDescription(blogData.description);
+    }
+  }, [blogData]);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -50,10 +58,27 @@ export default function EditBlog({ blogid }) {
     setIsLoading(true);
     const formData = new FormData(formRef.current);
     const title = formData.get("title");
-    const description = formData.get("description");
     const imageFile = formData.get("image");
-    let imageUrl = blogData?.image?.url; // agar image nahi h to purani rahe
+    let imageUrl = blogData?.image?.url;
     let imagePublicId = blogData?.image?.public_id;
+
+    if (title.length > 100) {
+      toast.error("title must be less than 100 characters");
+      setIsLoading(false);
+      return;
+    }
+
+    if (title.length < 3) {
+      toast.error("title must be at least 3 characters");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!description || description.replace(/<[^>]*>/g, "").length < 10) {
+      toast.error("Description must be at least 10 characters");
+      setIsLoading(false);
+      return;
+    }
 
     if (imageFile && imageFile.size > 0) {
       try {
@@ -177,19 +202,10 @@ export default function EditBlog({ blogid }) {
               type="text"
               name="title"
               defaultValue={blogData?.title}
-              placeholder="Enter Blog Title"
+              placeholder="Enter blog title"
               required
             />
-            <div className="w-full rounded-xl bg-white/10 border border-white/30 overflow-hidden">
-              <textarea
-                className="w-full resize-none box-border text-sm text-white placeholder-white/70 py-2 px-4 focus:outline-none focus:border-emerald-500 transition textarea-scrollbar overflow-y-auto rounded-xl"
-                name="description"
-                defaultValue={blogData?.description}
-                placeholder="Enter Description"
-                required
-                rows={3}
-              ></textarea>
-            </div>
+            <BlogEditor value={description} onChange={setDescription} />
             <input
               type="file"
               name="image"

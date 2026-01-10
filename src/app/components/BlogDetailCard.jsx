@@ -6,6 +6,8 @@ import Image from "next/image";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 
 export default function BlogDetailCard({ data, backUrl = "/" }) {
   const { _id: id, image, title, description, author, createdAt } = data;
@@ -63,6 +65,25 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
     ));
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: title,
+      text: "Check out this blog post!",
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
   return (
     <div className="max-w-6xl lg:h-[400px] h-auto mx-auto bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl mt-12 mb-12 text-white flex flex-col md:flex-row">
       {/* Left Side: Image */}
@@ -107,7 +128,7 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold mb-3 h-[60px] overflow-y-auto pr-1">
+        <h1 className="text-xl font-bold mb-3 h-[60px] overflow-y-auto pr-1">
           {title || "Untitled Blog"}
         </h1>
 
@@ -129,20 +150,19 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
         </div>
 
         {/* Blog Body */}
-        <div className="text-sm text-gray-200 leading-relaxed mb-6 max-h-[200px] overflow-y-auto pr-2">
+        <div
+          className="text-sm text-gray-200 leading-relaxed mb-6 max-h-[200px] overflow-y-auto pr-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-2 [&_li]:mb-1"
+        >
           {description ? (
-            description.split("\n\n").map((para, idx) => (
-              <p key={idx} className="mb-3">
-                {para}
-              </p>
-            ))
+            parse(
+              typeof window !== "undefined"
+                ? DOMPurify.sanitize(description)
+                : description
+            )
           ) : (
             <>
               <p>Blog description.</p>
-              <p className="mt-3">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-                nec odio. Praesent libero.
-              </p>
+              <p className="mt-3">Description is not available.</p>
             </>
           )}
         </div>
@@ -150,14 +170,14 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="w-24">
-            <button className="w-full flex gap-1 items-center px-4 py-1.5 backdrop-blur-sm border bg-emerald-700/30 focus:outline-none focus:bg-emerald-700/40 hover:bg-emerald-700/40 border-emerald-500/50 hover:border-emerald-500 rounded-full transition-all duration-300 cursor-pointer">
+            <button
+              onClick={handleShare}
+              className="w-full flex gap-1 items-center px-4 py-1.5 backdrop-blur-sm border bg-emerald-700/30 focus:outline-none focus:bg-emerald-700/40 hover:bg-emerald-700/40 border-emerald-500/50 hover:border-emerald-500 rounded-full transition-all duration-300 cursor-pointer"
+            >
               Share <IoShareSocialSharp className="text-xl" />
               <div className="absolute inset-x-0  h-px -bottom-px bg-gradient-to-r w-3/4 mx-auto from-transparent via-emerald-500 to-transparent" />
             </button>
           </div>
-          <p className="text-gray-400 text-sm">
-            Estimated read: <span className="text-emerald-300">5–7 mins</span>
-          </p>
         </div>
       </div>
     </div>
