@@ -1,5 +1,6 @@
 "use client";
 
+import BlogEditor from "@/app/components/BlogEditor";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Image from "next/image";
@@ -11,6 +12,7 @@ export default function CreateBlog() {
   const formRef = useRef(null);
   const [loading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [description, setDescription] = useState("");
   const router = useRouter();
 
   const handleImageChange = (e) => {
@@ -26,7 +28,7 @@ export default function CreateBlog() {
 
     const formData = new FormData(formRef.current);
     const title = formData.get("title");
-    const description = formData.get("description");
+    // const description = formData.get("description");
     const imageFile = formData.get("image");
     let imageUrl = null;
     let imagePublicId = null;
@@ -114,6 +116,7 @@ export default function CreateBlog() {
       toast.success("Blog created successfully");
       setIsLoading(false);
       formRef.current?.reset();
+      setDescription("");
       setTimeout(() => {
         router.push("/");
       }, 1000);
@@ -162,7 +165,7 @@ export default function CreateBlog() {
               placeholder="Enter Blog Title"
               required
             />
-            <div className="w-full rounded-xl bg-white/10 border border-white/30 overflow-hidden">
+            {/* <div className="w-full rounded-xl bg-white/10 border border-white/30 overflow-hidden">
               <textarea
                 className="w-full resize-none box-border text-sm text-white placeholder-white/70 py-2 px-4 focus:outline-none focus:border-emerald-500 transition textarea-scrollbar overflow-y-auto rounded-xl"
                 name="description"
@@ -170,7 +173,8 @@ export default function CreateBlog() {
                 required
                 rows={3}
               ></textarea>
-            </div>
+            </div> */}
+            <BlogEditor value={description} onChange={setDescription} />
             <input
               type="file"
               name="image"
@@ -179,13 +183,13 @@ export default function CreateBlog() {
               className="w-full text-sm px-4 py-2 rounded-full bg-white/10 border border-white/30 text-white/70 file:text-white/70 file:bg-transparent file:border-0 file:p-0 placeholder-gray-400 focus:outline-none focus:border-emerald-500/50"
             />
             {previewImage && (
-                <Image
-                  src={previewImage}
-                  alt="Blog Image Preview"
-                  width={150}
-                  height={150}
-                  className="rounded-xl object-cover border border-white/30"
-                />
+              <Image
+                src={previewImage}
+                alt="Blog Image Preview"
+                width={150}
+                height={150}
+                className="rounded-xl object-cover border border-white/30"
+              />
             )}
 
             <button
