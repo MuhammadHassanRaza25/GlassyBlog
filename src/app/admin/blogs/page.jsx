@@ -8,6 +8,52 @@ import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import AdminSearch from "../components/AdminSearch";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
+
+const highlightContent = (htmlString, search) => {
+  if (!htmlString) return "N/A";
+
+  const cleanHTML =
+    typeof window !== "undefined" ? DOMPurify.sanitize(htmlString) : htmlString;
+
+  if (!search?.trim()) return parse(cleanHTML);
+
+  const words = search
+    .trim()
+    .split(/\s+/)
+    .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .filter(Boolean);
+
+  if (words.length === 0) return parse(cleanHTML);
+
+  const regex = new RegExp(`(${words.join("|")})`, "gi");
+
+  return parse(cleanHTML, {
+    replace: (domNode) => {
+      if (domNode.type === "text" && domNode.data) {
+        const parts = domNode.data.split(regex);
+
+        return (
+          <>
+            {parts.map((part, i) =>
+              regex.test(part) ? (
+                <mark
+                  key={i}
+                  className="bg-emerald-300 text-black px-1 rounded mx-0.5"
+                >
+                  {part}
+                </mark>
+              ) : (
+                part
+              )
+            )}
+          </>
+        );
+      }
+    },
+  });
+};
 
 export default function AllBlogs() {
   const searchParams = useSearchParams();
@@ -27,32 +73,6 @@ export default function AllBlogs() {
   const [currentPage, setCurrentPage] = useState(page);
   const router = useRouter();
   const controllerRef = useRef(null);
-
-  const getHighlightedText = (text, search) => {
-    if (!text) return "N/A";
-    if (!search || !search.trim()) return text;
-
-    const words = search
-      .trim()
-      .split(/\s+/)
-      .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-
-    const regex = new RegExp(`(${words.join("|")})`, "gi");
-    const parts = text.split(regex);
-
-    return parts.map((part, i) =>
-      regex.test(part) ? (
-        <span
-          key={i}
-          className="bg-emerald-300 text-black font-semibold px-1 rounded mx-0.5"
-        >
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  };
 
   const columns = [
     {
@@ -78,14 +98,22 @@ export default function AllBlogs() {
       dataIndex: "title",
       key: "title",
       ellipsis: true,
-      render: (text) => getHighlightedText(text, debouncedSearch),
+      render: (html) => (
+        <div className="max-w-xs line-clamp-2 overflow-hidden">
+          {highlightContent(html, debouncedSearch)}
+        </div>
+      ),
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
       ellipsis: true,
-      render: (text) => getHighlightedText(text, debouncedSearch),
+      render: (html) => (
+        <div className="max-w-xs line-clamp-2 overflow-hidden">
+          {highlightContent(html, debouncedSearch)}
+        </div>
+      ),
     },
     {
       title: "Published Date",
@@ -323,12 +351,12 @@ export default function AllBlogs() {
                         </h3>
                         <p>
                           <span className="font-semibold">Title:</span>{" "}
-                          {getHighlightedText(record?.title, debouncedSearch) ||
+                          {highlightContent(record?.title, debouncedSearch) ||
                             "N/A"}
                         </p>
                         <p>
                           <span className="font-semibold">Description:</span>{" "}
-                          {getHighlightedText(
+                          {highlightContent(
                             record?.description,
                             debouncedSearch
                           ) || "N/A"}
