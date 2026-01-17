@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "GlassyBlog",
   description:
-    "GlassyBlog, crafted by Muhammad Hassan Raza, is a cutting-edge blogging platform that empowers users to effortlessly create, share, and explore high-quality content through a sophisticated glassmorphic interface designed for an exceptional user experience.",
+    "GlassyBlog built by Muhammad Hassan Raza - Full Stack Developer, a full-featured blogging platform with a modern glassmorphic UI and robust architecture, empowering users to seamlessly create, manage, share and explore high-quality content.",
 };
 
 export default function RootLayout({ children }) {
@@ -26,8 +26,8 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthContextProvider>
-            <ToasterProvider />
-            {children}
+          <ToasterProvider />
+          {children}
         </AuthContextProvider>
       </body>
     </html>
