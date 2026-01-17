@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 
 
@@ -10,10 +11,10 @@ export default function Footer() {
             <footer className="bg-black/30 border-t border-white/30 text-gray-300 text-sm py-6 backdrop-blur-md">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-center">
-                        © {currentYear} GlassyBlog. Built by <span className="text-emerald-400 font-medium">Muhammad Hassan Raza</span>.
+                        © {currentYear} GlassyBlog. Built by <Link href="https://www.linkedin.com/in/muhammad-hassanraza/" target="_blank" rel="noopener noreferrer"><span className="text-emerald-400 font-medium">Muhammad Hassan Raza</span></Link>.
                     </p>
                      <div className="flex space-x-4 items-center">
-                    <a
+                    <Link
                         href="https://github.com/MuhammadHassanRaza25"
                         target="_blank"
                         title="GitHub"
@@ -21,8 +22,8 @@ export default function Footer() {
                         className="flex items-center gap-1 hover:text-emerald-400 transition"
                     >
                         <FaGithub className="w-4 h-4" />
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                         href="https://www.linkedin.com/in/muhammad-hassanraza/"
                         target="_blank"
                         title="LinkedIn"
@@ -30,7 +31,7 @@ export default function Footer() {
                         className="flex items-center gap-1 hover:text-emerald-400 transition"
                     >
                         <FaLinkedin className="w-4 h-4" />
-                    </a>
+                    </Link>
                 </div>
                 </div>
             </footer>
