@@ -9,12 +9,19 @@
 ## 🚀 Key Features & Highlights
 
 * 📝 **Advanced Content Creation:** Rich text editor built with **Tiptap** for structured, professional content creation.
+
 * 🔐 **Enterprise-Grade Security:** Secure authentication implemented using **JWT** with a robust **Access & Refresh token flow**.
+
 * 🛡️ **Role-Based Access Control (RBAC):** Strict enforcement of admin-only access and protected routes for high-level security.
+
 * 📊 **Powerful Admin Dashboard:** Comprehensive management of blogs and users through interactive tables, featuring analytics visualized via Ant Design charts.
+
 * 🔍 **Real-Time Search & Highlighting:** Quick content discovery with real-time search functionality across blog listings and admin management tables.
-* 📑 **Optimized Management:** Pagination implemented for large datasets, and a dedicated **"My Blogs"** page for users to securely manage (edit/delete) their posts.
+
+* 📑 **Optimized Management:** Pagination implemented for large datasets, and a dedicated **My Blogs** page for users to securely manage (edit/delete) their posts.
+
 * 🖼️ **Media Optimization:** Seamless media upload and image management integrated with **Cloudinary**.
+
 * 📱 **Responsive Design:** A mobile-first, high-performance UI ensuring a flawless experience across all devices.
 
 ---
@@ -33,4 +40,4 @@
 
 ---
 
-**Developed with ❤️ by Muhammad Hassan Raza**
+**Developed with ❤️ by [Muhammad Hassan Raza](https://www.linkedin.com/in/muhammad-hassanraza/) | Full Stack Developer**
