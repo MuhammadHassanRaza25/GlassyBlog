@@ -34,7 +34,8 @@
 | **Database** | MongoDB |
 | **Editor** | Tiptap Rich-Text Editor |
 | **Authentication** | JWT (Access/Refresh Tokens) |
-| **UI Library** | Ant Design & Tailwind CSS |
+| **CSS Framework** | Tailwind CSS |
+| **UI Library** | Ant Design |
 | **Visuals** | Ant Design Charts |
 | **Media** | Cloudinary |
 
