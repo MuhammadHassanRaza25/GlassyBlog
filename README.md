@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 💎 GlassyBlog: A Full-Stack Blogging Platform
 
-## Getting Started
+**GlassyBlog** is a modern, scalable full-stack blogging platform developed for production-ready performance, security, and real-world use cases. Built with a focus on **Glassmorphism UI**, it offers a seamless user experience.
 
-First, run the development server:
+[🚀 Explore Live Demo](https://glassyblog.vercel.app/?page=1&limit=9)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Key Features & Highlights
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+* 📝 **Advanced Content Creation:** Rich text editor built with **Tiptap** for structured, professional content creation.
+* 🔐 **Enterprise-Grade Security:** Secure authentication implemented using **JWT** with a robust **Access & Refresh token flow**.
+* 🛡️ **Role-Based Access Control (RBAC):** Strict enforcement of admin-only access and protected routes for high-level security.
+* 📊 **Powerful Admin Dashboard:** Comprehensive management of blogs and users through interactive tables, featuring analytics visualized via Ant Design charts.
+* 🔍 **Real-Time Search & Highlighting:** Quick content discovery with real-time search functionality across blog listings and admin management tables.
+* 📑 **Optimized Management:** Pagination implemented for large datasets, and a dedicated **"My Blogs"** page for users to securely manage (edit/delete) their posts.
+* 🖼️ **Media Optimization:** Seamless media upload and image management integrated with **Cloudinary**.
+* 📱 **Responsive Design:** A mobile-first, high-performance UI ensuring a flawless experience across all devices.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | Next.js |
+| **Database** | MongoDB |
+| **Editor** | Tiptap Rich-Text Editor |
+| **Authentication** | JWT (Access/Refresh Tokens) |
+| **UI Library** | Ant Design & Tailwind CSS |
+| **Visuals** | Ant Design Charts |
+| **Media** | Cloudinary |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Developed with ❤️ by Muhammad Hassan Raza**
