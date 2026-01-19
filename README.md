@@ -18,7 +18,7 @@
 
 * 🔍 **Real-Time Search & Highlighting:** Quick content discovery with real-time search functionality across blog listings and admin management tables.
 
-* 📑 **Optimized Management:** Pagination implemented for large datasets, and a dedicated **My Blogs** page for users to securely manage (edit/delete) their posts.
+* 📑 **Optimized Management:** Pagination implemented for large datasets, and a dedicated **My Blogs** page for users to securely manage their published content.
 
 * 🖼️ **Media Optimization:** Seamless media upload and image management integrated with **Cloudinary**.
 
