@@ -41,7 +41,7 @@ const highlightHTML = (htmlString, search) => {
                 </mark>
               ) : (
                 part
-              )
+              ),
             )}
           </>
         );
@@ -86,7 +86,7 @@ export default function BlogCard({
                     loading: "Deleting...",
                     success: "Blog deleted successfully!",
                     error: "Failed to delete blog.",
-                  }
+                  },
                 );
 
                 onDelete && onDelete(id);
@@ -112,27 +112,24 @@ export default function BlogCard({
 
   const highlightedTitle = useMemo(
     () => highlightHTML(title || "Untitled Blog", searchTerm),
-    [title, searchTerm]
+    [title, searchTerm],
   );
   const highlightedDesc = useMemo(
     () => highlightHTML(description || "No description provided.", searchTerm),
-    [description, searchTerm]
+    [description, searchTerm],
   );
 
   return (
-    <div
-      key={id}
-      className="relative w-80 bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl duration-300 cursor-pointer group flex flex-col justify-between"
-    >
+    <div className="relative w-80 bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl duration-300 group flex flex-col justify-between overflow-hidden cursor-pointer">
       <Link
         href={`/${basePath}/${id}`}
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-10"
         aria-label="View Blog"
       />
 
       {/* Edit/Delete Buttons */}
       {showButtons && (
-        <div className="absolute top-3 right-3 flex gap-2 z-10">
+        <div className="absolute top-3 right-3 flex gap-2 z-20">
           <Link
             href={`/blog/edit/${id}`}
             className="p-1.5 bg-emerald-700 hover:bg-emerald-600 text-white backdrop-blur-sm rounded-full cursor-pointer"
@@ -153,29 +150,30 @@ export default function BlogCard({
       )}
 
       {/* Image */}
-      <div className="pointer-events-none flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow">
         <div className="overflow-hidden rounded-t-2xl">
           <Image
             src={image?.url || "/images/cardimg.jpg"}
             width={800}
-            height={192}
+            height={200}
             alt="Blog Image"
             className="object-cover w-full h-48 group-hover:scale-105 transition-transform duration-300"
-            unoptimized
           />
         </div>
 
         {/* Content */}
         <div className="p-5 flex flex-col flex-grow justify-between">
-          <h2 className="text-white text-xl font-semibold mb-2 hover:text-emerald-400 transition-colors duration-300 line-clamp-2">
-            {highlightedTitle}
-          </h2>
+          <div className="h-16 flex flex-col justify-start mb-2">
+            <h2 className="text-white text-xl font-semibold mb-2 line-clamp-2 transition-transform duration-300 group-hover:-translate-y-0.5">
+              {highlightedTitle}
+            </h2>
+          </div>
 
-          <div className="text-gray-300 text-sm mb-6 line-clamp-2 [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4">
+          <div className="h-10 text-gray-300 text-sm mb-6 line-clamp-2 whitespace-pre-line [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4">
             {highlightedDesc}
           </div>
 
-          <div className="flex items-end justify-between mt-auto">
+          <div className="flex items-center justify-between mt-auto">
             <div className="flex items-center gap-3">
               <Image
                 src={author?.avatar?.url || "/images/avatar.png"}
@@ -184,7 +182,7 @@ export default function BlogCard({
                 alt="Blog Author"
                 className="w-10 h-10 rounded-full border-2 border-emerald-400 object-cover shrink-0"
               />
-              <div className="overflow-hidden">
+              <div className="overflow-hidden w-32">
                 <p className="text-white font-medium text-sm truncate">
                   {author.username || "Unknown Author"}
                 </p>
@@ -200,8 +198,9 @@ export default function BlogCard({
               </div>
             </div>
 
-            <button className="flex gap-3 items-center px-4 py-1.5 text-xs font-semibold backdrop-blur-sm border bg-emerald-700/30 focus:outline-none focus:bg-emerald-700/40 hover:bg-emerald-700/40 border-emerald-500/50 hover:border-emerald-500 text-white rounded-full transition-all duration-300 cursor-pointer">
+            <button className="flex gap-3 items-center px-4 py-1.5 text-xs font-semibold backdrop-blur-sm border bg-emerald-700/30 focus:outline-none focus:bg-emerald-700/40 group-hover:bg-emerald-700/40 border-emerald-500/50 group-hover:border-emerald-500 text-white rounded-full transition-all duration-300 cursor-pointer">
               Read More
+              <span className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-emerald-400 to-transparent transition-all duration-300 group-hover:w-3/4" />
             </button>
           </div>
         </div>

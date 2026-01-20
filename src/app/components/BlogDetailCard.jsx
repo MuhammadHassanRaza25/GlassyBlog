@@ -44,7 +44,7 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
                     loading: "Deleting...",
                     success: "Blog deleted successfully!",
                     error: "Failed to delete blog.",
-                  }
+                  },
                 );
                 router.push("/my-blogs");
               } catch (err) {
@@ -93,12 +93,11 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
           fill
           alt={"Blog Image"}
           className="w-full h-full"
-          unoptimized
         />
       </div>
 
       {/* Right Side: Content */}
-      <div className="md:w-1/2 w-full p-6 md:p-10 flex flex-col justify-between">
+      <div className="md:w-1/2 w-full p-8 flex flex-col justify-between">
         {/* Back Link + ID */}
         <div className="flex items-center justify-between mb-4">
           <Link
@@ -128,9 +127,11 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
         </div>
 
         {/* Title */}
-        <h1 className="text-xl font-bold mb-3 h-[60px] overflow-y-auto pr-1">
-          {title || "Untitled Blog"}
-        </h1>
+        <div className="h-24 mb-3 flex flex-col justify-center">
+          <h1 className="text-xl font-bold leading-tight line-clamp-3 overflow-hidden text-ellipsis">
+            {title || "Untitled Blog"}
+          </h1>
+        </div>
 
         {/* Author Info */}
         <div className="flex items-center gap-3 mb-6">
@@ -150,14 +151,12 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
         </div>
 
         {/* Blog Body */}
-        <div
-          className="text-sm text-gray-200 leading-relaxed mb-6 max-h-[200px] overflow-y-auto pr-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-2 [&_li]:mb-1"
-        >
+        <div className="text-sm text-gray-200 leading-relaxed mb-6 h-[250px] overflow-y-auto pr-2 whitespace-pre-line [&_p]:min-h-[10px] [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-2 [&_li]:mb-0">
           {description ? (
             parse(
               typeof window !== "undefined"
                 ? DOMPurify.sanitize(description)
-                : description
+                : description,
             )
           ) : (
             <>
@@ -169,13 +168,13 @@ export default function BlogDetailCard({ data, backUrl = "/" }) {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="w-24">
+          <div className="group relative w-24">
             <button
               onClick={handleShare}
               className="w-full flex gap-1 items-center px-4 py-1.5 backdrop-blur-sm border bg-emerald-700/30 focus:outline-none focus:bg-emerald-700/40 hover:bg-emerald-700/40 border-emerald-500/50 hover:border-emerald-500 rounded-full transition-all duration-300 cursor-pointer"
             >
               Share <IoShareSocialSharp className="text-xl" />
-              <div className="absolute inset-x-0  h-px -bottom-px bg-gradient-to-r w-3/4 mx-auto from-transparent via-emerald-500 to-transparent" />
+              <span className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-emerald-400 to-transparent transition-all duration-300 group-hover:w-3/4" />
             </button>
           </div>
         </div>
