@@ -37,7 +37,7 @@ export async function GET(request) {
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-    console.log("Blogs From MongoDB ===>", blogs);
+    // console.log("Blogs From MongoDB ===>", blogs);
 
     return NextResponse.json({
       data: blogs,
@@ -68,7 +68,7 @@ export async function POST(request) {
   try {
     await ConnectDB();
     const blog = await request.json();
-    console.log("checking data in backend before post ===>", blog);
+    // console.log("checking data in backend before post ===>", blog);
 
     const { error } = blogSchema.validate(blog);
     if (error) {
@@ -96,7 +96,7 @@ export async function POST(request) {
     });
     await addBlog.save();
 
-    console.log("Blog Added Successfully ===>", addBlog);
+    // console.log("Blog Added Successfully ===>", addBlog);
 
     return NextResponse.json({
       data: addBlog,

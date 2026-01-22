@@ -45,7 +45,7 @@ export async function DELETE(request, { params }) {
       await cloudinary.uploader.destroy(deleteUser.avatar.public_id);
     }
 
-    console.log("User Deleted From Admin Successfully =====>", deleteUser);
+    // console.log("User Deleted From Admin Successfully =====>", deleteUser);
 
     return NextResponse.json({ msg: "User deleted successfully" });
   } catch (err) {

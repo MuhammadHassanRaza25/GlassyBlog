@@ -26,7 +26,7 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  console.log("Stats Data ==>", data);
+  // console.log("Stats Data ==>", data);
 
   return (
     <>

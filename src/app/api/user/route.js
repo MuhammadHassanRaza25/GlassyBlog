@@ -8,7 +8,7 @@ export async function GET(request) {
   await ConnectDB();
   
   const userObj = await verifyUser();
-  console.log("Check Verify User in Backend ==>", userObj);
+  // console.log("Check Verify User in Backend ==>", userObj);
   
   if (!userObj) {
     return NextResponse.json({ user: null, msg: "Not logged in" }, { status: 401 });

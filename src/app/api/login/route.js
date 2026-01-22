@@ -95,23 +95,23 @@ export async function POST(request) {
       maxAge: 15 * 24 * 60 * 60, // 15 days
     });
 
-    console.log("Login ==> Cookies set successfully");
-    console.log("Login ==> Cookie options:", { 
-      httpOnly: cookieOptions.httpOnly, 
-      secure: cookieOptions.secure, 
-      sameSite: cookieOptions.sameSite,
-      path: cookieOptions.path,
-      NODE_ENV: process.env.NODE_ENV 
-    });
+    // console.log("Login ==> Cookies set successfully");
+    // console.log("Login ==> Cookie options:", { 
+    //   httpOnly: cookieOptions.httpOnly, 
+    //   secure: cookieOptions.secure, 
+    //   sameSite: cookieOptions.sameSite,
+    //   path: cookieOptions.path,
+    //   NODE_ENV: process.env.NODE_ENV 
+    // });
     
     // Verifying cookies are actually set on response
-    const setCookieHeaders = response.headers.get("set-cookie");
-    console.log("Login - Checking Set-Cookie headers ==>", setCookieHeaders ? "Present" : "Missing");
-    if (setCookieHeaders) {
-      console.log("Login - Set-Cookie preview:", setCookieHeaders.substring(0, 200));
-    }
+    // const setCookieHeaders = response.headers.get("set-cookie");
+    // console.log("Login - Checking Set-Cookie headers ==>", setCookieHeaders ? "Present" : "Missing");
+    // if (setCookieHeaders) {
+    //   console.log("Login - Set-Cookie preview:", setCookieHeaders.substring(0, 200));
+    // }
 
-    console.log("User Login Successfully!");
+    // console.log("User Login Successfully!");
     return response;
   } catch (err) {
     console.error("Login Error ==>", err);

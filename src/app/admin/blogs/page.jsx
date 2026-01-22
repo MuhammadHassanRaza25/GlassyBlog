@@ -226,7 +226,7 @@ export default function AllBlogs() {
         // console.log("Blogs Data Is Here ===>", blogData);
       } catch (err) {
         if (err.name === "AbortError") return;
-        // console.log("Error in fetching blog data ===>", err);
+        console.log("Error in fetching blog data ===>", err);
         setBlogsData((prev) => ({
           ...prev,
           totalPages: 0,

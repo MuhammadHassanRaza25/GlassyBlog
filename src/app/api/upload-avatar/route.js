@@ -34,9 +34,9 @@ export async function POST(req) {
         .end(buffer);
     });
 
-    console.log("<=== Avatar Image Uploaded ===>");
-    console.log("Avatar Image URL ===>", result.secure_url);
-    console.log("Avatar Image Public ID ===>", result.public_id);
+    // console.log("<=== Avatar Image Uploaded ===>");
+    // console.log("Avatar Image URL ===>", result.secure_url);
+    // console.log("Avatar Image Public ID ===>", result.public_id);
 
     return NextResponse.json({
       url: result.secure_url,

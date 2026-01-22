@@ -42,7 +42,7 @@ export async function GET(request) {
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-    console.log("Users Data For Admin ===>", users);
+    // console.log("Users Data For Admin ===>", users);
 
     return NextResponse.json({
       data: users,

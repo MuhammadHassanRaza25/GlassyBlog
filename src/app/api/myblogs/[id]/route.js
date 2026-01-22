@@ -91,7 +91,7 @@ export async function PUT(request, { params }) {
       );
     }
 
-    console.log("Blog Updated ===>", updateBlog);
+    // console.log("Blog Updated ===>", updateBlog);
 
     return NextResponse.json({ data: updateBlog, msg: "Blog updated" });
   } catch (err) {
@@ -131,7 +131,7 @@ export async function DELETE(request, { params }) {
       await cloudinary.uploader.destroy(deleteBlog.image.public_id);
     }
 
-    console.log("Blog Deleted Successfully =====>", deleteBlog);
+    // console.log("Blog Deleted Successfully =====>", deleteBlog);
 
     return NextResponse.json({ msg: "Blog deleted successfully" });
   } catch (err) {

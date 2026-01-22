@@ -16,7 +16,7 @@ export async function POST(req) {
     }
 
     const result = await cloudinary.uploader.destroy(public_id);
-    console.log("Image Deleted ===>", result);
+    // console.log("Image Deleted ===>", result);
     
     return NextResponse.json({
       msg: "Image deleted",

@@ -43,7 +43,7 @@ export async function GET(request) {
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-    console.log("Blogs Data For Admin ===>", blogs);
+    // console.log("Blogs Data For Admin ===>", blogs);
 
     return NextResponse.json({
       data: blogs,

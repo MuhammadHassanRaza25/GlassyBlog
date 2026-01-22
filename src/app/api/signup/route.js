@@ -26,7 +26,7 @@ export async function POST(request) {
   await ConnectDB();
   const newUserData = await request.json();
   const { error, value } = signupSchema.validate(newUserData); //ye check karega ke data exact signupSchema ki tarah hai ya nhi.
-  console.log("User Validated Data - Before Save ===>", value);
+  // console.log("User Validated Data - Before Save ===>", value);
 
   if (error) {
     console.log("JOI ERROR ==>", error.message);
@@ -57,7 +57,7 @@ export async function POST(request) {
   // Add user in DB
   const addUser = await new UserModel({ ...value, role: value.role || "user" });
   await addUser.save();
-  console.log("User Registered Successfully ===>", addUser);
+  // console.log("User Registered Successfully ===>", addUser);
 
   return NextResponse.json({
     data: addUser,

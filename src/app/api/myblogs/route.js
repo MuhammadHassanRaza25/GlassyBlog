@@ -43,7 +43,7 @@ export async function GET(request) {
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-    console.log("User blogs from mongoDB ===>", blogs);
+    // console.log("User blogs from mongoDB ===>", blogs);
 
     return NextResponse.json({
       data: blogs,

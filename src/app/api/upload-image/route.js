@@ -36,9 +36,9 @@ export async function POST(request) {
         .end(buffer);
     });
 
-    console.log("<=== Blog Image Uploaded ===>");
-    console.log("Blog Image URL ===>", uploadRes.secure_url);
-    console.log("Blog Image Public ID ===>", uploadRes.public_id);
+    // console.log("<=== Blog Image Uploaded ===>");
+    // console.log("Blog Image URL ===>", uploadRes.secure_url);
+    // console.log("Blog Image Public ID ===>", uploadRes.public_id);
     
     return NextResponse.json({
       url: uploadRes.secure_url,
