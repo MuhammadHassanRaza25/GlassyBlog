@@ -217,7 +217,7 @@ export default function Header() {
                     <button
                       disabled={isLoading}
                       onClick={handleLogout}
-                      className="group relative flex items-center justify-center gap-2 w-full px-4 py-2 font-semibold text-white bg-emerald-700/30 backdrop-blur-sm border-b border-emerald-500/50 rounded-b-lg transition-all duration-300 hover:bg-emerald-700/40 hover:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 cursor-pointer"
+                      className="group relative flex items-center justify-center gap-2 w-full px-4 py-2 font-semibold text-white bg-emerald-700 backdrop-blur-sm border-b border-emerald-500/50 rounded-b-lg transition-all duration-300 hover:bg-emerald-800 hover:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 cursor-pointer"
                     >
                       {isLoading ? (
                         <div className="formLoader"></div>
@@ -384,7 +384,7 @@ export default function Header() {
                     {/* Logout Button */}
                     <button
                       onClick={handleLogout}
-                      className="group relative flex items-center justify-center gap-2 w-full px-4 py-2 font-semibold text-white bg-emerald-700/30 backdrop-blur-sm border-b border-emerald-500/50 rounded-b-lg transition-all duration-300 hover:bg-emerald-700/40 hover:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 cursor-pointer"
+                      className="group relative flex items-center justify-center gap-2 w-full px-4 py-2 font-semibold text-white bg-emerald-700 backdrop-blur-sm border-b border-emerald-500/50 rounded-b-lg transition-all duration-300 hover:bg-emerald-800 hover:border-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 cursor-pointer"
                     >
                       {isLoading ? (
                         <div className="formLoader"></div>

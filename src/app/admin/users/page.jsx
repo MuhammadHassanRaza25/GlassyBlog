@@ -286,21 +286,21 @@ export default function AllUsers() {
                   <h3 className="p-1 text-sm font-semibold bg-emerald-100 text-gray-700 mb-2">
                     User Details
                   </h3>
-                  <p>
+                  <p className="mt-2">
                     <span className="font-semibold">Username:</span>{" "}
                     {getHighlightedText(record?.username, debouncedSearch) ||
                       "N/A"}
                   </p>
-                  <p>
+                  <p className="mt-2">
                     <span className="font-semibold">Email:</span>{" "}
                     {getHighlightedText(record?.email, debouncedSearch) ||
                       "N/A"}
                   </p>
-                  <p>
+                  <p className="mt-2">
                     <span className="font-semibold">Role:</span>{" "}
                     {record?.role || "N/A"}
                   </p>
-                  <p>
+                  <p className="mt-2">
                     <span className="font-semibold">Registered Date:</span>{" "}
                     {record?.createdAt
                       ? new Date(record.createdAt).toLocaleDateString("en-US", {

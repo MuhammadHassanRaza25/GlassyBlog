@@ -8,6 +8,7 @@ import BlogCard from "./components/BlogCard";
 import { MotionUp } from "@/components/ui/motion-up";
 import BlogsPagination from "./components/BlogPagination";
 import SearchBlogs from "@/app/components/SearchBlogs";
+import { HiOutlineNewspaper } from "react-icons/hi2";
 
 export default function HomeClient() {
   const searchParams = useSearchParams();
@@ -36,13 +37,13 @@ export default function HomeClient() {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       const res = await fetch(
         `${baseUrl}/api/blogs?page=${pageNumber}&limit=${limit}&search=${encodeURIComponent(
-          query
+          query,
         )}`,
         {
           credentials: "include",
           cache: "no-store",
           signal: controllerRef.current.signal,
-        }
+        },
       );
       const data = await res.json();
       setBlogs(data);
@@ -121,7 +122,7 @@ export default function HomeClient() {
           </div>
         ) : blogs?.error ? (
           <p className="text-red-400 text-center lg:text-base text-sm mt-5 mb-14">
-            Failed to fetch user blogs. Please try again later.
+            Failed to fetch blogs. Please try again later.
           </p>
         ) : blogs?.data?.length > 0 ? (
           blogs?.data?.map((blog, index) => (
@@ -141,9 +142,22 @@ export default function HomeClient() {
                 </p>
               </>
             ) : (
-              <p className="text-emerald-400 text-center mt-10 mb-14">
-                No blogs available.
-              </p>
+              <>
+                <div className="flex flex-col items-center justify-center w-full py-10 px-6 border border-white/10 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl">
+                  <div className="mb-5 flex items-center justify-center">
+                    <div className="absolute w-24 h-24 bg-emerald-500/20 blur-[50px] rounded-full" />
+                    <div className="p-5 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl shadow-inner">
+                      <HiOutlineNewspaper className="w-10 h-10 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    Feed is empty
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    No stories posted yet. Check back soon for fresh insights.
+                  </p>
+                </div>
+              </>
             )}
           </div>
         )}

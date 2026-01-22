@@ -46,7 +46,7 @@ const highlightContent = (htmlString, search) => {
                 </mark>
               ) : (
                 part
-              )
+              ),
             )}
           </>
         );
@@ -110,7 +110,7 @@ export default function AllBlogs() {
       key: "description",
       ellipsis: true,
       render: (html) => (
-        <div className="max-w-xs line-clamp-2 overflow-hidden">
+        <div className="max-w-xs line-clamp-2 overflow-hidden whitespace-pre-line [&_p]:min-h-[10px] [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-2 [&_li]:mb-0">
           {highlightContent(html, debouncedSearch)}
         </div>
       ),
@@ -168,7 +168,7 @@ export default function AllBlogs() {
                     loading: "Deleting...",
                     success: "Blog deleted successfully!",
                     error: "Failed to delete blog.",
-                  }
+                  },
                 );
 
                 // Remove deleted blog from blogsData
@@ -219,7 +219,7 @@ export default function AllBlogs() {
             credentials: "include",
             cache: "no-store",
             signal: controllerRef.current.signal,
-          }
+          },
         );
         let blogData = await res.json();
         setBlogsData(blogData);
@@ -354,14 +354,16 @@ export default function AllBlogs() {
                           {highlightContent(record?.title, debouncedSearch) ||
                             "N/A"}
                         </p>
-                        <p>
+                        <p className="mt-2">
                           <span className="font-semibold">Description:</span>{" "}
-                          {highlightContent(
-                            record?.description,
-                            debouncedSearch
-                          ) || "N/A"}
+                          <div className="mt-1 whitespace-pre-line [&_p]:min-h-[10px] [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-2 [&_li]:mb-0">
+                            {highlightContent(
+                              record?.description,
+                              debouncedSearch,
+                            ) || "N/A"}
+                          </div>
                         </p>
-                        <p>
+                        <p className="mt-2">
                           <span className="font-semibold">Published:</span>{" "}
                           {record?.createdAt
                             ? new Date(record.createdAt).toLocaleDateString(
@@ -370,12 +372,12 @@ export default function AllBlogs() {
                                   year: "numeric",
                                   month: "short",
                                   day: "numeric",
-                                }
+                                },
                               )
                             : "N/A"}
                         </p>
 
-                        <p>
+                        <p className="mt-2">
                           <span className="font-semibold">Link:</span>{" "}
                           <Link
                             href={`/blog/${record?._id}`}

@@ -7,6 +7,9 @@ import Header from "@/components/Header";
 import { MotionUp } from "@/components/ui/motion-up";
 import { useRouter, useSearchParams } from "next/navigation";
 import SearchBlogs from "@/app/components/SearchBlogs";
+import Link from "next/link";
+import { HiOutlineDocumentPlus } from "react-icons/hi2";
+import { FaPenNib } from "react-icons/fa";
 
 export default function MyBlogs() {
   const searchParams = useSearchParams();
@@ -35,13 +38,13 @@ export default function MyBlogs() {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
       const res = await fetch(
         `${baseUrl}/api/myblogs?page=${fetchPage}&limit=${limit}&search=${encodeURIComponent(
-          debouncedSearch
+          debouncedSearch,
         )}`,
         {
           credentials: "include",
           cache: "no-cache",
           signal: controllerRef.current.signal,
-        }
+        },
       );
       const data = await res.json();
       setResData(data);
@@ -152,9 +155,32 @@ export default function MyBlogs() {
                     </p>
                   </>
                 ) : (
-                  <p className="text-emerald-400 text-center mt-10 mb-14">
-                    No blogs available.
-                  </p>
+                  <div className="flex flex-col items-center justify-center w-full py-10 px-6 border border-white/10 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl">
+                    <div className="relative mb-8 flex items-center justify-center">
+                      <div className="absolute w-24 h-24 bg-emerald-500/20 blur-[50px] rounded-full" />
+                      <div className="relative p-5 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl shadow-inner">
+                        <HiOutlineDocumentPlus className="w-12 h-12 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+                      </div>
+                    </div>
+
+                    <h3 className="lg:text-2xl text-xl font-bold text-white mb-2 tracking-tight">
+                      Ready to share your story?
+                    </h3>
+                    <p className="text-gray-400 text-center max-w-[300px] mb-10 leading-relaxed text-sm">
+                      You haven't posted any blogs yet. Your creative journey
+                      starts with your first post!
+                    </p>
+
+                    <div className="group relative w-fit mx-auto">
+                      <Link
+                        href="/blog/create"
+                        className="flex gap-3 items-center px-6 py-3 font-semibold backdrop-blur-md border bg-emerald-700/30 focus:outline-none focus:bg-emerald-700/40 hover:bg-emerald-700/40 border-emerald-500/50 hover:border-emerald-500 !text-white mx-auto text-center rounded-full transition-all duration-300 cursor-pointer shadow-lg shadow-emerald-900/20"
+                      >
+                        Create Your First Blog <FaPenNib />
+                        <span className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-gradient-to-r from-transparent via-emerald-400 to-transparent transition-all duration-500 group-hover:w-3/4" />
+                      </Link>
+                    </div>
+                  </div>
                 )}
               </div>
             )}
