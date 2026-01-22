@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import SearchBlogs from "@/app/components/SearchBlogs";
 import Link from "next/link";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
-import { FaPenNib } from "react-icons/fa";
+import { FaPenNib, FaSearch } from "react-icons/fa";
 
 export default function MyBlogs() {
   const searchParams = useSearchParams();
@@ -147,12 +147,37 @@ export default function MyBlogs() {
               <div className="text-center mt-10 mb-14 text-emerald-400">
                 {debouncedSearch ? (
                   <>
-                    <p>
-                      No results found for <strong>"{debouncedSearch}"</strong>.
-                    </p>
-                    <p className="text-gray-300 text-sm mt-1">
-                      Try using different keywords or check your spelling.
-                    </p>
+                    <MotionUp>
+                      <div className="flex flex-col items-center justify-center gap-6 w-64 py-6 px-6 border border-white/10 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl transition-all duration-300 overflow-hidden">
+                        <div className="relative shrink-0 flex items-center justify-center">
+                          <div className="absolute w-12 h-12 bg-emerald-500/20 blur-[35px] rounded-full" />
+                          <div className="relative p-4 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl shadow-inner">
+                            <FaSearch className="w-5 h-5 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]" />{" "}
+                          </div>
+                        </div>
+
+                        <div className="text-center">
+                          <h3 className="text-lg font-bold text-white mb-1 tracking-tight">
+                            No Results Found
+                          </h3>
+                          <p className="text-gray-400 text-xs leading-relaxed">
+                            Nothing found for{" "}
+                            <span className="text-emerald-400 font-medium italic">
+                              "{debouncedSearch}"
+                            </span>
+                            . <br /> Try a different keyword.
+                          </p>
+                        </div>
+
+                        {/* Clear Button */}
+                        <button
+                          onClick={() => setSearchValue("")}
+                          className="shrink-0 px-4 py-2 text-xs font-semibold bg-emerald-700/30 hover:bg-emerald-700/40 text-white border border-emerald-500/50 hover:border-emerald-500 rounded-full transition-all duration-300 cursor-pointer"
+                        >
+                          Clear Search
+                        </button>
+                      </div>
+                    </MotionUp>
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center w-full py-10 px-6 border border-white/10 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl">
