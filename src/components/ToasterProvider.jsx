@@ -8,6 +8,7 @@ export default function ToasterProvider() {
       position="top-center"
       reverseOrder={false}
       toastOptions={{
+        duration: 2000,
         style: {
           background: "rgba(16, 185, 129, 0.3)", 
           color: "#fff",
